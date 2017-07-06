@@ -1,0 +1,28 @@
+.gridContainer {
+	text-align: center;
+}
+
+.gridContainer--row {
+	display: -webkit-flex;
+	display: -moz-flex;
+	display: -ms-flex;
+	display: -o-flex;
+	display: flex;
+	-ms-align-items: center;
+	align-items: center;
+}
+
+.gridContainer--col {
+	flex: 1 0 0;
+	height: 600px;
+	display: -webkit-flex;
+	display: -moz-flex;
+	display: -ms-flex;
+	display: -o-flex;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: 1px solid red;
+	background: #fff;
+	border: 2px dashed #19141b;
+}
