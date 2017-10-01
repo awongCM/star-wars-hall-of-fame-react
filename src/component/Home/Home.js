@@ -24,7 +24,7 @@ class Home extends Component {
     };
     let self = this;
 
-    fetch(`http://swapi.co/api/people/`, initHeaders
+    fetch(`https://swapi.co/api/people/`, initHeaders
       ).then((response) => {
         return response.json();
       }).then((myJSON) => {
