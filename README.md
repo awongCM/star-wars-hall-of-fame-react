@@ -29,3 +29,4 @@ can just do the following.
 ### TODOS
 - Add route/link to heroes's planets/movies/trivia etc
 - Make data saving capabilities to be persistent
+- Handle multi asynchronous requests logic 
