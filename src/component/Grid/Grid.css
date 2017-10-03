@@ -3,22 +3,14 @@
 }
 
 .gridContainer--row {
-	display: -webkit-flex;
-	display: -moz-flex;
-	display: -ms-flex;
-	display: -o-flex;
 	display: flex;
 	-ms-align-items: center;
 	align-items: center;
 }
 
 .gridContainer--col {
-	flex: 1 0 0;
-	height: 600px;
-	display: -webkit-flex;
-	display: -moz-flex;
-	display: -ms-flex;
-	display: -o-flex;
+	flex: 1 2 0;
+	height: 400px;
 	display: flex;
 	align-items: center;
 	justify-content: center;

@@ -50,8 +50,8 @@ class Grid extends Component {
 			//Item Component
 			cols.push(<Item key={i} item_id={item.id} characterData={item} reorderItemsByOverallPopularity={this.reorderItemsByOverallPopularity.bind(this)}/>);
 
-			//setup up each row of 3 items in the grid
-			if (i % 3 === 2) {
+			//setup up each row of 5 items in the grid
+			if (i % 4 === 3) {
 				rows.push(<div className="gridContainer--row" key={row_index} >{cols}</div>);
 				cols = [];
 				row_index++;
