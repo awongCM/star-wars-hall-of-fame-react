@@ -24,7 +24,7 @@ can just do the following.
 1. Download the zipped file.
 2. Run `npm install`
 3. Run `npm start`
-4. The `http://localhost:3000` will load up in the browser.
+4. The `http://localhost:8080` will load up in the browser.
 
 ### TODOS
 - Add route/link to heroes's planets/movies/trivia etc
