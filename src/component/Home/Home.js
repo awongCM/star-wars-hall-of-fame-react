@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Form from "./../Form/Form";
 import Grid from "./../Grid/Grid";
+import * as SWAPI from "./../../services/api";
 
 class Home extends Component {
 
@@ -17,14 +18,9 @@ class Home extends Component {
   }
 
   fetchData() {
-    let initHeaders = {
-          method: 'GET',
-          cache: 'default',
-          accept: 'application/json'
-    };
     let self = this;
 
-    fetch(`https://swapi.co/api/people/`, initHeaders
+    fetch(SWAPI.url, SWAPI.initHeaders()
       ).then((response) => {
         return response.json();
       }).then((myJSON) => {
