@@ -43,15 +43,17 @@ class Grid extends Component {
 		
 		let rows = [],
 			cols = [],
-  			row_index = 0;
+			row_index = 0;
+		//Params to control number of items per row in a grid
+		const item_per_row =  4, remainder_diff = item_per_row - 1;
 
 		filteredItems.forEach((item, i) => {
 			
 			//Item Component
 			cols.push(<Item key={i} item_id={item.id} characterData={item} reorderItemsByOverallPopularity={this.reorderItemsByOverallPopularity.bind(this)}/>);
 
-			//setup up each row of 5 items in the grid
-			if (i % 4 === 3) {
+			//setup up each row of items in the grid
+			if (i % item_per_row === remainder_diff) {
 				rows.push(<div className="gridContainer--row" key={row_index} >{cols}</div>);
 				cols = [];
 				row_index++;
