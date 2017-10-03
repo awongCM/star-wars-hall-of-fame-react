@@ -4,6 +4,8 @@ import {Link} from "react-router";
 import './../Grid/Grid.css';
 import './Item.css';
 
+import * as SWAPI from './../../services/api';
+
 class Item extends Component {
 	constructor(props) {
 		super(props);
@@ -49,7 +51,16 @@ class Item extends Component {
 			  overallPopularity = itemInfo.overall_vote,
 			  totalFilms = itemInfo.films;
 		
-		console.log(totalFilms);
+		//TODO	  
+		// console.log("totalFilms", totalFilms);
+
+		// Promise.all([SWAPI.requestAsync(totalFilms[0]), SWAPI.requestAsync(totalFilms[1])]).then( (allData) => {
+			
+		// 	allData.forEach(function(element) {
+		// 		console.log("allDataElemnt", element);
+		// 	});
+		// });
+
 		return (
 			<div className="gridContainer--col">
 				<div className="characterBox">
@@ -66,8 +77,8 @@ class Item extends Component {
 						<div className="filmsList">
 							<span>Films</span><br/>
 							<ul>
-								{totalFilms.map( (film) => {
-									return <li><span>{film}</span></li>
+								{totalFilms.map( (film, index) => {
+									return <li key={index}><span>{film}</span></li>
 								})}
 							</ul>
 						</div>						
