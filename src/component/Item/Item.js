@@ -46,7 +46,10 @@ class Item extends Component {
 		const itemInfo = this.props.characterData,
 			  upVote = itemInfo.up_vote,
 			  downVote = itemInfo.down_vote,
-			  overallPopularity = itemInfo.overall_vote;
+			  overallPopularity = itemInfo.overall_vote,
+			  totalFilms = itemInfo.films;
+		
+		console.log(totalFilms);
 		return (
 			<div className="gridContainer--col">
 				<div className="characterBox">
@@ -59,6 +62,14 @@ class Item extends Component {
 						<div className="planetLink">
 							<span>Planet of Origin</span><br />
 							<a href={itemInfo.homeworld}>{itemInfo.homeworld}</a>
+						</div>
+						<div className="filmsList">
+							<span>Films</span><br/>
+							<ul>
+								{totalFilms.map( (film) => {
+									return <li><span>{film}</span></li>
+								})}
+							</ul>
 						</div>						
 					</div>
 					<div className="voteContainer">

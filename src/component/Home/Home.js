@@ -41,7 +41,7 @@ class Home extends Component {
         return item;
     })
 
-    // console.log(newProps);
+    //  console.log(newProps);
     return newProps;
   }
 
