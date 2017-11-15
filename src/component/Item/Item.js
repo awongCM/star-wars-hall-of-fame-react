@@ -11,11 +11,38 @@ class Item extends Component {
 		super(props);
 		//TODO
 		this.state = {
-			homePlanet: ""
+			homePlanet: {},
+			films: []
 		}
 		//Not sure if this is good practice
 		this.upVote = 0;
 		this.downVote = 0;
+	}
+
+	setStateAsync(state) {
+		return new Promise((resolve, reject) => {
+			this.setState(state, resolve);
+		});
+	}
+
+	async componentDidMount() {
+		console.log("sure did mount before render()");
+
+		const { characterData } = this.props,
+					homePlanetURL = characterData.homeworld,
+					allFilmsURLs = characterData.films;
+		
+		const result = await SWAPI.requestURL(homePlanetURL);
+
+		console.log("homePlanetURL result", result);
+
+		await this.setStateAsync({homePlanet: result });
+		
+		const results = await Promise.all(SWAPI.requestURLs(allFilmsURLs));
+
+		console.log("filmsURL results", results);
+
+		await this.setStateAsync({films: results});
 	}
 
 	upVoteCharacter(e) {
@@ -45,22 +72,15 @@ class Item extends Component {
 	}
 
 	render() {
+
 		const itemInfo = this.props.characterData,
 			  upVote = itemInfo.up_vote,
 			  downVote = itemInfo.down_vote,
 			  overallPopularity = itemInfo.overall_vote,
-			  totalFilms = itemInfo.films;
+				totalFilms = itemInfo.films;
+
+		const { homePlanet, films } = this.state;
 		
-		//TODO	  
-		// console.log("totalFilms", totalFilms);
-
-		// Promise.all([SWAPI.requestAsync(totalFilms[0]), SWAPI.requestAsync(totalFilms[1])]).then( (allData) => {
-			
-		// 	allData.forEach(function(element) {
-		// 		console.log("allDataElemnt", element);
-		// 	});
-		// });
-
 		return (
 			<div className="gridContainer--col">
 				<div className="characterBox">
@@ -72,14 +92,16 @@ class Item extends Component {
 							key={this.props.item_i}>{itemInfo.name}</Link>
 						<div className="planetLink">
 							<span>Planet of Origin</span><br />
-							<a href={itemInfo.homeworld}>{itemInfo.homeworld}</a>
+							<a href={homePlanet.url}>{homePlanet.name}</a>
 						</div>
 						<div className="filmsList">
-							<span>Films</span><br/>
+							<span>Films played in</span><br/>
 							<ul>
-								{totalFilms.map( (film, index) => {
-									return <li key={index}><span>{film}</span></li>
-								})}
+								{
+									films.map( (film, index) => {
+										return <li key={index}><a href={film.url}>{film.title}</a></li>
+									})
+								}
 							</ul>
 						</div>						
 					</div>
