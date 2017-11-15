@@ -72,12 +72,45 @@ class Item extends Component {
 
 	render() {
 
-		const itemInfo = this.props.characterData,
-			  upVote = itemInfo.up_vote,
-			  downVote = itemInfo.down_vote,
-			  overallPopularity = itemInfo.overall_vote;
+		const { characterData } = this.props,
+					upVote = characterData.up_vote,
+					downVote = characterData.down_vote,
+					overallPopularity = characterData.overall_vote;
 
 		const { homePlanet, films } = this.state;
+
+
+		//TODO - maybe to have its own components
+		const loadingState = (
+				<div className="loadingState">
+					Loading trivia ..........
+				</div>
+		);
+
+		let triviaContent = null;
+
+		if (homePlanet !== {} && films.length !== 0) {
+			triviaContent = (
+				<div className="triviaContent">
+					<div className="planetLink">
+						<span>Planet of Origin</span><br />
+						<a href={homePlanet.url}>{homePlanet.name}</a>
+					</div>
+					<div className="filmsList">
+						<span>Films played in</span><br/>
+						<ul>
+							{
+								films.map( (film, index) => {
+									return <li key={index}><a href={film.url}>{film.title}</a></li>
+								})
+							}
+						</ul>
+					</div>
+				</div>
+			);
+		} else {
+			triviaContent = loadingState;
+		}
 		
 		return (
 			<div className="gridContainer--col">
@@ -87,21 +120,8 @@ class Item extends Component {
 						<Link 
 							to={"/people/"+this.props.item_id}
 							className="characterLink"
-							key={this.props.item_i}>{itemInfo.name}</Link>
-						<div className="planetLink">
-							<span>Planet of Origin</span><br />
-							<a href={homePlanet.url}>{homePlanet.name}</a>
-						</div>
-						<div className="filmsList">
-							<span>Films played in</span><br/>
-							<ul>
-								{
-									films.map( (film, index) => {
-										return <li key={index}><a href={film.url}>{film.title}</a></li>
-									})
-								}
-							</ul>
-						</div>						
+							key={this.props.item_i}>{characterData.name}</Link>
+						{triviaContent}						
 					</div>
 					<div className="voteContainer">
 						<div className="voteContainer--upVote" onClick={this.upVoteCharacter.bind(this)}><i className="em em---1"></i><span className="voteCount">{upVote}</span> </div>
