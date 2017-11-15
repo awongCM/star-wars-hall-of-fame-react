@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {Link} from "react-router";
 
 import './Detail.css';
+import { initHeaders } from '../../services/api';
 
 class Detail extends Component {
 	constructor(props) {
@@ -17,17 +18,13 @@ class Detail extends Component {
 	}
 
 	fetchData() {
-	    let initHeaders = {
-	          method: 'GET',
-	          cache: 'default',
-	          accept: 'application/json'
-	    };
 	    let self = this;
 
 	    //there's not zero-based index search for character api
-	    let param_index = parseInt(this.props.params.id) + 1;
-
-	    fetch(`http://swapi.co/api/people/${param_index}`, initHeaders
+			let param_index = parseInt(this.props.params.id) + 1;
+			
+			//For some reason - you have to explicitly pass query params instead of using headers
+	    fetch(`https://swapi.co/api/people/${param_index}?format=json`
 	      ).then((response) => {
 	        return response.json();
 	      }).then((myJSON) => {
