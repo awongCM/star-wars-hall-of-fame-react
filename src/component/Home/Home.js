@@ -39,9 +39,10 @@ class Home extends Component {
         item.down_vote = 0;
         item.overall_vote = 0;
         return item;
-    })
+    });
 
-    //  console.log(newProps);
+    //TODO -- question poised to think about handling multi url requests at the root level, rather than Item level
+    //console.log("Home newprops", newProps);
     return newProps;
   }
 

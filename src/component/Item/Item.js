@@ -9,7 +9,6 @@ import * as SWAPI from './../../services/api';
 class Item extends Component {
 	constructor(props) {
 		super(props);
-		//TODO
 		this.state = {
 			homePlanet: {},
 			films: []
@@ -34,15 +33,15 @@ class Item extends Component {
 		
 		const result = await SWAPI.requestURL(homePlanetURL);
 
-		console.log("homePlanetURL result", result);
+		// console.log("homePlanetURL result", result);
 
-		await this.setStateAsync({homePlanet: result });
-		
 		const results = await Promise.all(SWAPI.requestURLs(allFilmsURLs));
 
-		console.log("filmsURL results", results);
+		// console.log("filmsURL and homePlanetURL results",result, results);
 
-		await this.setStateAsync({films: results});
+		await this.setStateAsync({homePlanet: result, films: results});
+
+		// console.log("results: this.setStateAsync({homePlanet: result, films: results})");
 	}
 
 	upVoteCharacter(e) {

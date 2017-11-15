@@ -12,28 +12,24 @@ export function initHeaders() {
 
 export function requestURL(requestedURL) {
 	return new Promise( function (resolve, reject) {
-	  _requestURL(requestedURL, function (err, res, body) {
-		  if (err) {return reject(err);}
-		  return resolve(res);
-	  });
+		_requestURL(requestedURL)
+			.then((res) =>  resolve(res))
+			.catch((err) => reject(err));
 	});
 }
 
 export function requestURLs(requested_URLs) {
-	return requested_URLs.map( (requested_URL) => {
-		return new Promise( (resolve, reject) => {
-			_requestURL(requested_URL, (err, res, body) => {
-				if (err) return reject(err);
-				return resolve(res);
-			});
-		});
-	});
+	return requested_URLs.map( (requested_URL) => requestURL(requested_URL));
 }
 
-function _requestURL(requested_URL, callback) {
-	fetch(requested_URL, initHeaders()).then( (response) =>{
-		callback(null, response.json(), response.body);
-	}).catch( (error)=>{
-		callback(error, null, null);
-	});
+async function _requestURL (requested_URL) {
+	try {
+
+		let response = await fetch(requested_URL, initHeaders());
+		const resp_json = await response.json();
+		return resp_json;
+
+	} catch (error) {
+		return error;
+	}
 }

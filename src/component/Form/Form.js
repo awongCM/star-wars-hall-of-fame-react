@@ -11,7 +11,7 @@ class Form extends Component {
 		return (
 			<div className="formContainer">
 	          <form action="" id="form" className="formContainer--formControl">
-	            <label for="inputControl" className="formContainer--searchLabel">Filter By Character Name:</label>
+	            <label htmlFor="inputControl" className="formContainer--searchLabel">Filter By Character Name:</label>
 	            <input type="text" id="inputControl" className="formContainer--textControl" onChange={this.handleCharacterFilter.bind(this)} />
 	          </form>
 	        </div>
