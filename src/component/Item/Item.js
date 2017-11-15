@@ -75,8 +75,7 @@ class Item extends Component {
 		const itemInfo = this.props.characterData,
 			  upVote = itemInfo.up_vote,
 			  downVote = itemInfo.down_vote,
-			  overallPopularity = itemInfo.overall_vote,
-				totalFilms = itemInfo.films;
+			  overallPopularity = itemInfo.overall_vote;
 
 		const { homePlanet, films } = this.state;
 		
