@@ -10,7 +10,7 @@ class Home extends Component {
     this.state = {
        data: [],
        characterFilter: ""
-    }
+    };
   }
 
   componentDidMount() {
