@@ -10,9 +10,9 @@ export function initHeaders() {
 	}
 }
 
-export function requestURL(requestedURL) {
+export function requestURL(requested_URL) {
 	return new Promise( function (resolve, reject) {
-		_requestURL(requestedURL)
+		_requestURL(requested_URL)
 			.then((res) =>  resolve(res))
 			.catch((err) => reject(err));
 	});
