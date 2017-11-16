@@ -9,6 +9,7 @@ import * as SWAPI from './../../services/api';
 class Item extends Component {
 	constructor(props) {
 		super(props);
+		//TODOS - set up another child component for trivial content
 		this.state = {
 			homePlanet: {},
 			films: []
