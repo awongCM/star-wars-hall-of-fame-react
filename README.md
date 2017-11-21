@@ -26,6 +26,13 @@ can just do the following.
 3. Run `npm start`
 4. The `http://localhost:8080` will load up in the browser.
 
+### Demo
+
+[logo]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png
+![alt text][logo]
+
+[Demo Link](https://star-wars-hall-of-fame-react.herokuapp.com/)
+
 ### TODOS
 - Add route/link to heroes's planets/movies/trivia etc
 - Make data saving capabilities to be persistent
