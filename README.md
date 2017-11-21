@@ -31,7 +31,7 @@ can just do the following.
 [logo]: https://github.com/awongCM/star-wars-hall-of-fame-react/blob/master/public/Star_Wars_Hall_of_Fame_App.png
 ![alt text][logo]
 
-**[Demo Link]**(https://star-wars-hall-of-fame-react.herokuapp.com/)
+**[Demo Link](https://star-wars-hall-of-fame-react.herokuapp.com/)**
 
 ### TODOS
 - Add route/link to heroes's planets/movies/trivia etc
