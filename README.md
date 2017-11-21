@@ -28,7 +28,7 @@ can just do the following.
 
 ### Demo
 
-[logo]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png
+[logo]: https://github.com/awongCM/star-wars-hall-of-fame-react/blob/master/public/Star_Wars_Hall_of_Fame_App.png
 ![alt text][logo]
 
 [Demo Link](https://star-wars-hall-of-fame-react.herokuapp.com/)
