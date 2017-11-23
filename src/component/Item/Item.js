@@ -7,6 +7,8 @@ import './Item.css';
 import * as SWAPI from './../../services/api';
 import * as localStorageService from '../../services/localStorage';
 
+//TODOs - to persist character trivia content data in localstorage in various scenarios when user interacts with this UI screen 
+
 class Item extends Component {
 	constructor(props) {
 		super(props);
