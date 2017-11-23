@@ -16,7 +16,7 @@ class Home extends Component {
   componentDidMount() {
      this.fetchData();    
   }
-
+  
   fetchData() {
     let self = this;
 
@@ -41,7 +41,6 @@ class Home extends Component {
         return item;
     });
 
-    //TODO -- question poised to think about handling multi url requests at the root level, rather than Item level
     //console.log("Home newprops", newProps);
     return newProps;
   }
@@ -51,11 +50,12 @@ class Home extends Component {
   }
 
   render() {
+    const { pathname } = this.props.location;
     return (
       <div>
         <Form data={this.state.data} characterFilter={this.state.characterFilter} 
                                     onHandleCharacterFilter={this.handleCharacterFilter.bind(this)} />
-        <Grid data={this.state.data} characterFilter={this.state.characterFilter} />
+        <Grid pathname={pathname} data={this.state.data} characterFilter={this.state.characterFilter} />
       </div>
     );
   }

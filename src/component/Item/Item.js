@@ -5,6 +5,7 @@ import './../Grid/Grid.css';
 import './Item.css';
 
 import * as SWAPI from './../../services/api';
+import * as localStorageService from '../../services/localStorage';
 
 class Item extends Component {
 	constructor(props) {
@@ -12,8 +13,9 @@ class Item extends Component {
 		//TODOS - set up another child component for trivial content
 		this.state = {
 			homePlanet: {},
-			films: []
-		}
+			films: [],
+			loaded: false
+		};
 		//Not sure if this is good practice
 		this.upVote = 0;
 		this.downVote = 0;
@@ -25,8 +27,46 @@ class Item extends Component {
 		});
 	}
 
+	componentDidUpdate() {
+		const {loaded} = this.state;
+
+		//return if data has been found and loaded
+		if (loaded) {
+			return;
+		}
+
+		const { item_id, pathname } = this.props;
+		
+		//fetch the character trivia data from localstorage
+		let prevArrayObj = localStorageService.loadClientData(pathname);
+
+		//set to empty array if there's not stored data ib localstorage
+		if(prevArrayObj === undefined) {
+			prevArrayObj = [];
+		}
+
+		prevArrayObj.push({item_id: item_id, homePlanet: this.state.homePlanet, films: this.state.films });
+		
+		// save it to localstorage with a unique key
+		localStorageService.saveClientData(pathname, prevArrayObj);
+
+		console.log("adding items to the localstorage");
+  }
+
 	async componentDidMount() {
-		console.log("sure did mount before render()");
+		const { item_id, pathname } = this.props;
+
+		const data = await localStorageService.loadClientData(pathname);
+		
+		//load found trivia
+		if(data !== undefined) {
+			// console.log("Found item_id: ", data.find((item) => item.item_id === item_id));
+
+			const item_data = await data.find((item) => item.item_id === item_id);
+			await this.setStateAsync({homePlanet: item_data.homePlanet, films: item_data.films, loaded: true});
+
+		} else { //otherwise fetch character trivia
+		
 
 		const { characterData } = this.props,
 					homePlanetURL = characterData.homeworld,
@@ -43,6 +83,8 @@ class Item extends Component {
 		await this.setStateAsync({homePlanet: result, films: results});
 
 		// console.log("results: this.setStateAsync({homePlanet: result, films: results})");
+
+		}
 	}
 
 	upVoteCharacter(e) {

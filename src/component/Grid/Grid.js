@@ -25,11 +25,14 @@ class Grid extends Component {
 				item.overall_vote = overallPopularity;
 				return item;
 			} else {return item;}
-		})
+		});
 		this.setState({data: newOrderedData});
 	}
 
 	render() {
+		//passed its prop from parent route component
+		const { pathname } = this.props;
+
 		let filteredItems = this.state.data.filter((item) => {
 			if (item.name.toLowerCase().indexOf(this.props.characterFilter.toLowerCase()) !== -1) {
 				return item;
@@ -50,7 +53,7 @@ class Grid extends Component {
 		filteredItems.forEach((item, i) => {
 			
 			//Item Component
-			cols.push(<Item key={i} item_id={item.id} characterData={item} reorderItemsByOverallPopularity={this.reorderItemsByOverallPopularity.bind(this)}/>);
+			cols.push(<Item key={i} item_id={item.id} pathname={pathname} characterData={item} reorderItemsByOverallPopularity={this.reorderItemsByOverallPopularity.bind(this)}/>);
 
 			//setup up each row of items in the grid
 			if (i % item_per_row === remainder_diff) {
