@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {Link} from "react-router";
 
 import './Detail.css';
-import { initHeaders } from '../../services/api';
+import * as localStorageService from '../../services/localStorage';
 
 class Detail extends Component {
 	constructor(props) {
@@ -10,11 +10,30 @@ class Detail extends Component {
 		this.state = {
 			characterData: {},
 			characterComments: []
-		}
+		};
 	}
 
 	componentDidMount() {
-	    this.fetchData();    
+
+		const availableClientData = this.loadPersistedClientData();
+
+		if (availableClientData !== undefined) {
+			this.setState({
+				characterData: availableClientData.characterData, 
+				characterComments: availableClientData.characterComments
+			});
+		}
+		else { // we have nothing to begin with
+			this.fetchData();
+		}
+	}
+
+	loadPersistedClientData() {
+		 //our key value to fetch and store locals
+		const { pathname } = this.props.location;
+		
+		console.log('loadClientData', localStorageService.loadClientData(pathname));
+		return localStorageService.loadClientData(pathname);
 	}
 
 	fetchData() {
@@ -31,7 +50,7 @@ class Detail extends Component {
 	      	return this.refineData(myJSON);
 	      }).then((refinedCharData) => {
 	        self.setState({characterData: refinedCharData});
-	        console.log(refinedCharData);
+					console.log(refinedCharData);					
 	      });
 	}
 
@@ -50,8 +69,20 @@ class Detail extends Component {
 		}
 
 		this.state.characterComments.push(comment);
-		this.setState({characterComments: this.state.characterComments});
+		this.setState({characterComments: this.state.characterComments}, () => this.persistsClientData());
+
 		this.refs.commentInput.value = "";
+	}
+
+	persistsClientData() {
+		const {pathname} = this.props.location;
+		
+		const mergedData = Object.assign({}, 
+			{characterData: this.state.characterData}, 
+			{characterComments: this.state.characterComments}
+		);
+
+		localStorageService.saveClientData(pathname, mergedData);
 	}
 
 	render() {
@@ -61,7 +92,7 @@ class Detail extends Component {
 			return (<div key={i} className="comment">{item}</div>)
 		});
 
-		const heading = (comments.length) ? <h4 class="heading">Comments</h4> : '';
+		const heading = (comments.length) ? <h4 className="heading">Comments</h4> : '';
 
 		return (
 			<div>
