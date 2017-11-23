@@ -14,7 +14,7 @@
 
 ### Features
 1. You can upvote/downvote your favourite Star Wars character.
-2. You can write simple comments for each Star Wars character.
+2. You can write or add comments to your favourite Star Wars character as you click on their profile link.  You can clear up your browser's cookies session to reset their comment fields if you want like, as there's backend implementation to store them.
 
 ### Instructions to build and deploy
 
@@ -34,6 +34,6 @@ can just do the following.
 **[Demo Link](https://star-wars-hall-of-fame-react.herokuapp.com/)**
 
 ### TODOS
-- Add route/link to heroes's planets/movies/trivia etc
-- Make data saving capabilities to be persistent
+- Add route/link to characters' planets/movies/trivia link content pages
+- ~~Make data saving capabilities to be persistent~~
 - ~~Handle multi asynchronous requests logic~~ 
