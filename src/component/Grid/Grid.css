@@ -15,6 +15,6 @@
 	align-items: center;
 	justify-content: center;
 	border: 1px solid red;
-	background: #fff;
-	border: 2px dashed #19141b;
+	background: #222;
+	border: 2px outset #fff;
 }

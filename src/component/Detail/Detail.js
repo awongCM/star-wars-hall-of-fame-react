@@ -98,7 +98,7 @@ class Detail extends Component {
 			<div>
 				<Link 
 					to={"/"}
-					className="returnHomePage">Go Back</Link>
+					className="returnHomePage"><i className="em em-back"></i></Link>
 
 				<div className="detailContainer">
 					<div className="detailContainer--media"><img src="" alt="" /></div>

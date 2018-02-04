@@ -19,7 +19,9 @@ a, a:visited, a:hover, a:active {
 }
 
 textarea {
-	margin-right: 20px;
+  margin-right: 20px;
+  font-size: 14px;
+  outline: none;
 }
 button {
 	border: 0;

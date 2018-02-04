@@ -1,6 +1,8 @@
 .returnHomePage {
 	display: block;
-	padding: 20px 0;
+	padding: 20px 0 20px 50px;
+	text-decoration: none;
+	font-size: 22px;
 }
 
 .DetailContainer,
@@ -12,6 +14,7 @@
 	margin: 0 auto;
 	background: #3944ca;
 	color: #fff;
+	border: 10px outset deepskyblue;
 }
 
 .detailContainer--media {
@@ -30,8 +33,18 @@
 
 .detailContainer--description .title {
 	font-size: 54px;
-	color: #ffb440;
+	color: #ff9b00;
 	margin: 0;
+}
+
+.commentInputContainer {
+	width: 450px;
+}
+
+.commentInputContainer > textarea,
+.commentInputContainer > button {
+	display: inline-block;
+	vertical-align: middle;
 }
 
 .commentSection .heading {
@@ -41,5 +54,7 @@
 
 .commentSection > .comment {
 	padding: 20px;
-	border: 1px dashed #dcdcdc;
+	border: 3px dashed #dcdcdc;
+	margin: 10px;
+	color: mediumturquoise
 }
