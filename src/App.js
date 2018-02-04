@@ -13,6 +13,9 @@ class App extends Component {
         <Route component={MainApp} >
           <Route path="/" component={Home} />
           <Route path="/people/:id" component={Detail}  />
+          {/* TODO - for routes to planets and movies for characters */}
+          <Route path="/planet/:id" component={Detail}/>
+          <Route path="/film/:id" component={Detail} />
         </Route>
       </Router>
     );
