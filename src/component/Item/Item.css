@@ -91,4 +91,9 @@
 	padding: 20px;
 	width: 200px;
 	text-align: center;
+	font-size: 18px;
+}
+
+.loadingState .title {
+	margin: 10px 0;
 }

@@ -128,7 +128,8 @@ class Item extends Component {
 		//TODO - maybe to have its own components
 		const loadingState = (
 				<div className="loadingState">
-					Loading trivia ..........
+					<h4 className="title">Loading</h4>
+					<i className="fa fa-refresh fa-spin"></i>
 				</div>
 		);
 
