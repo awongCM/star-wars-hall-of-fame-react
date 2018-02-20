@@ -124,7 +124,8 @@ class Item extends Component {
 					overallPopularity = characterData.overall_vote;
 
 		const { homePlanet, films } = this.state;
-		const planetEndPointURL = "https://swapi.co/api/planets/";
+		const planetEndPointURL = "https://swapi.co/api/planets/",
+					filmEndPointURL = "https://swapi.co/api/film/";
 
 		//TODO - maybe to have its own components
 		const loadingState = (
@@ -140,18 +141,26 @@ class Item extends Component {
 			let id_suffix = stringUtil.fetchIDSuffix(homePlanet.url, planetEndPointURL);
 			let planet_id = stringUtil.trimSpecialChars(id_suffix);
 
+			// Loop through the films array
+			let filmsURL = films.map( (film) => {
+				let id_suffix = stringUtil.fetchIDSuffix(film.url, filmEndPointURL);
+				let film_id = stringUtil.trimSpecialChars(id_suffix);
+				film.id = film_id;
+				return film;
+			});
+
 			triviaContent = (
 				<div className="triviaContent">
 					<div className="planetLink">
 						<span>Planet of Origin</span><br />
-						<Link to={"/planet/"+planet_id} className="characterLink" key={planet_id}>{homePlanet.name}</Link>
+						<Link to={"/planet/"+planet_id} key={planet_id}>{homePlanet.name}</Link>
 					</div>
 					<div className="filmsList">
 						<span>Films played in</span><br/>
 						<ul>
 							{
-								films.map( (film, index) => {
-									return <li key={index}><a href={film.url}>{film.title}</a></li>
+								filmsURL.map((filmURL, index) => {
+									return <li key={index}><Link to={"/film/"+filmURL.id} key={filmURL.id}>{filmURL.title}</Link></li>
 								})
 							}
 						</ul>

@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import {Link} from "react-router";
 
-import './DetailPlanet.css';
+import './DetailFilm.css';
 import * as localStorageService from '../../services/localStorage';
 
-class DetailPlanet extends Component {
+class DetailFilm extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			homePlanetData: {},
-			homePlanetComments: []
+			filmData: {},
+			filmComments: []
 		};
 	}
 
@@ -19,8 +19,8 @@ class DetailPlanet extends Component {
 
 		if (availableClientData !== undefined) {
 			this.setState({
-				homePlanetData: availableClientData.homePlanetData, 
-				homePlanetComments: availableClientData.homePlanetComments
+				filmData: availableClientData.filmData, 
+				filmComments: availableClientData.filmComments
 			});
 		}
 		else { // we have nothing to begin with
@@ -43,13 +43,13 @@ class DetailPlanet extends Component {
 			let param_index = parseInt(this.props.params.id);
 			
 			//For some reason - you have to explicitly pass query params instead of using headers
-	    fetch(`https://swapi.co/api/planets/${param_index}?format=json`
+	    fetch(`https://swapi.co/api/films/${param_index}?format=json`
 	      ).then((response) => {
 	        return response.json();
 	      }).then((myJSON) => {
 	      	return this.refineData(myJSON);
 	      }).then((refinedCharData) => {
-	        self.setState({homePlanetData: refinedCharData});
+	        self.setState({filmData: refinedCharData});
 					console.log(refinedCharData);					
 	      });
 	}
@@ -68,18 +68,19 @@ class DetailPlanet extends Component {
 			return;
 		}
 
-		this.state.homePlanetComments.push(comment);
-		this.setState({homePlanetComments: this.state.homePlanetComments}, () => this.persistsClientData());
+		this.state.filmComments.push(comment);
+		this.setState({filmComments: this.state.filmComments}, () => this.persistsClientData());
 
 		this.refs.commentInput.value = "";
-	}
-
+  }
+  
+  // TODO - persist client data regardless whether comments are provided.
 	persistsClientData() {
 		const {pathname} = this.props.location;
 		
 		const mergedData = Object.assign({}, 
-			{homePlanetData: this.state.homePlanetData}, 
-			{homePlanetComments: this.state.homePlanetComments}
+			{filmData: this.state.filmData}, 
+			{filmComments: this.state.filmComments}
 		);
 
 		localStorageService.saveClientData(pathname, mergedData);
@@ -87,8 +88,8 @@ class DetailPlanet extends Component {
 
 	render() {
 
-		const homePlanetData = this.state.homePlanetData;
-		const comments = this.state.homePlanetComments.map((item, i) => {
+		const filmData = this.state.filmData;
+		const comments = this.state.filmComments.map((item, i) => {
 			return (<div key={i} className="comment">{item}</div>)
 		});
 
@@ -103,18 +104,16 @@ class DetailPlanet extends Component {
 				<div className="detailContainer">
 					<div className="detailContainer--media"><img src="" alt="" /></div>
 					<div className="detailContainer--description">
-						<h1 className="title">{homePlanetData.name}</h1>
-						<p>Rotation Period: {homePlanetData.rotation_period}</p>
-						<p>Orbital Period: {homePlanetData.mass}</p>
-						<p>Diameter: {homePlanetData.diameter}</p>
-						<p>Climate: {homePlanetData.climate}</p>
-						<p>Gravity: {homePlanetData.gravity}</p>
-						<p>Surface water: {homePlanetData.surface_water}</p>
-						<p>Population: {homePlanetData.population}</p>
+						<h1 className="title">{filmData.title}</h1>
+						<p>Director: {filmData.director}</p>
+						<p>Producer: {filmData.producer}</p>
+						<p>Episode Number: {filmData.episode_id}</p>
+						<p>Opening Crawl: {filmData.opening_crawl}</p>
+						<p>Release Date: {filmData.release_date}</p>
 					</div>
 					
 					<div className="commentInputContainer">
-						<textarea ref="commentInput" placeholder="Enter your comments for this planet! :)" cols="30" rows="5" ></textarea>
+						<textarea ref="commentInput" placeholder="Enter your comments for this film! :)" cols="30" rows="5" ></textarea>
 						<button onClick={this.saveComment.bind(this)}>Save</button>
 					</div>
 					<div className="commentSection">
@@ -128,4 +127,4 @@ class DetailPlanet extends Component {
 	}
 }
 
-export default DetailPlanet;
+export default DetailFilm;

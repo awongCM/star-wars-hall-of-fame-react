@@ -4,6 +4,7 @@ import MainApp from "./component/MainApp/MainApp";
 import Home from "./component/Home/Home";
 import Detail from "./component/Detail/Detail";
 import DetailPlanet from './component/DetailPlanet/DetailPlanet';
+import DetailFilm from './component/DetailFilm/DetailFilm';
 
 class App extends Component {
 
@@ -14,9 +15,8 @@ class App extends Component {
         <Route component={MainApp} >
           <Route path="/" component={Home} />
           <Route path="/people/:id" component={Detail}  />
-          {/* TODO - for routes to planets and movies for characters */}
           <Route path="/planet/:id" component={DetailPlanet}/>
-          <Route path="/film/:id" component={Detail} />
+          <Route path="/film/:id" component={DetailFilm} />
         </Route>
       </Router>
     );
