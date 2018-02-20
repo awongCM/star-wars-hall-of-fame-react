@@ -6,6 +6,7 @@ import './Item.css';
 
 import * as SWAPI from './../../services/api';
 import * as localStorageService from '../../services/localStorage';
+import * as stringUtil from '../../util/stringUtil';
 
 //TODOs - to persist character trivia content data in localstorage in various scenarios when user interacts with this UI screen 
 
@@ -123,7 +124,7 @@ class Item extends Component {
 					overallPopularity = characterData.overall_vote;
 
 		const { homePlanet, films } = this.state;
-
+		const planetEndPointURL = "https://swapi.co/api/planets/";
 
 		//TODO - maybe to have its own components
 		const loadingState = (
@@ -136,11 +137,14 @@ class Item extends Component {
 		let triviaContent = null;
 
 		if (homePlanet !== {} && films.length !== 0) {
+			let id_suffix = stringUtil.fetchIDSuffix(homePlanet.url, planetEndPointURL);
+			let planet_id = stringUtil.trimSpecialChars(id_suffix);
+
 			triviaContent = (
 				<div className="triviaContent">
 					<div className="planetLink">
 						<span>Planet of Origin</span><br />
-						<a href={homePlanet.url}>{homePlanet.name}</a>
+						<Link to={"/planet/"+planet_id} className="characterLink" key={planet_id}>{homePlanet.name}</Link>
 					</div>
 					<div className="filmsList">
 						<span>Films played in</span><br/>
