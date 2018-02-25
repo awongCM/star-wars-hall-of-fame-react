@@ -172,9 +172,9 @@ class Item extends Component {
 		}
 		
 		return (
-			<div className="gridContainer--col">
+			<div className="gridContainer--col flex-center">
 				<div className="characterBox">
-					<div className="characterBox--media">
+					<div className="characterBox--media flex-center">
 						<img src="" alt="" />
 						<Link 
 							to={"/people/"+this.props.item_id}
@@ -182,11 +182,11 @@ class Item extends Component {
 							key={this.props.item_i}>{characterData.name}</Link>
 						{triviaContent}						
 					</div>
-					<div className="voteContainer">
-						<div className="voteContainer--upVote" onClick={this.upVoteCharacter.bind(this)}><i className="em em---1"></i><span className="voteCount">{upVote}</span> </div>
-						<div className="voteContainer--downVote" onClick={this.downVoteCharacter.bind(this)}><i className="em em--1"></i><span className="voteCount">{downVote}</span> </div>
+					<div className="voteContainer flex-center">
+						<div className="voteContainer--upVote flex-center" onClick={this.upVoteCharacter.bind(this)}><i className="em em---1"></i><span className="voteCount">{upVote}</span> </div>
+						<div className="voteContainer--downVote flex-center" onClick={this.downVoteCharacter.bind(this)}><i className="em em--1"></i><span className="voteCount">{downVote}</span> </div>
 					</div>
-					<div className="overAllVoteContainer"><i className="em em-heart"></i><span className="voteCount">{overallPopularity}</span></div>
+					<div className="overAllVoteContainer flex-center"><i className="em em-heart"></i><span className="voteCount">{overallPopularity}</span></div>
 				</div>
 			</div>
 		);

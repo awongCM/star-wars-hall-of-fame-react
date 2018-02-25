@@ -101,7 +101,7 @@ class DetailPlanet extends Component {
 					className="returnHomePage"><i className="em em-back"></i></Link>
 
 				<div className="detailContainer">
-					<div className="detailContainer--media"><img src="" alt="" /></div>
+					<div className="detailContainer--media flex-center"><img src="" alt="" /></div>
 					<div className="detailContainer--description">
 						<h1 className="title">{homePlanetData.name}</h1>
 						<p>Rotation Period: {homePlanetData.rotation_period}</p>

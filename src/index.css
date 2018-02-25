@@ -37,15 +37,10 @@ button {
 }
 
 
-/**
-* TODO - use this for all elements to be vertically 
-* and horizontally centered
-*/
-
 /*Utility styles*/
 .flex-center {
 	display: flex;
-  	justify-content: center;
-  	align-items: center;
+  justify-content: center;
+  align-items: center;
 }
 

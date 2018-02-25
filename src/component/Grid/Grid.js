@@ -57,7 +57,7 @@ class Grid extends Component {
 
 			//setup up each row of items in the grid
 			if (i % item_per_row === remainder_diff) {
-				rows.push(<div className="gridContainer--row" key={row_index} >{cols}</div>);
+				rows.push(<div className="gridContainer--row flex-center" key={row_index} >{cols}</div>);
 				cols = [];
 				row_index++;
 			}
@@ -65,7 +65,7 @@ class Grid extends Component {
 		
 		//for the remaining items
 		if(cols.length > 0 ) {
-			rows.push(<div className="gridContainer--row" key={row_index}>{cols}</div>);
+			rows.push(<div className="gridContainer--row flex-center" key={row_index}>{cols}</div>);
 		}
 
  		return (

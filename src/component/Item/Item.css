@@ -7,13 +7,6 @@
 .characterBox--media {
 	width: 100%;
 	height: 80%;
-	display: -webkit-flex;
-	display: -moz-flex;
-	display: -ms-flex;
-	display: -o-flex;
-	display: flex;
-	justify-content: center;
-	align-items: center;
 	flex-direction: column;
 	background: #fffdf0;
 }
@@ -46,14 +39,7 @@
 
 .voteContainer {
 	height: 10%;
-	display: -webkit-flex;
-	display: -moz-flex;
-	display: -ms-flex;
-	display: -o-flex;
-	display: flex;
 	justify-content:space-between;
-	-ms-align-items: center;
-	align-items: center;
 }
 
 .voteContainer--upVote,
@@ -62,21 +48,15 @@
 	border: 1px solid grey;
 	height: 100%;
 	cursor: pointer;
-	display: flex;
-  	justify-content: center;
-  	align-items: center;
-  	background: #c1c1c1;
+  background: #c1c1c1;
 }
 
 .overAllVoteContainer {
 	height: 10%;
 	border: 1px solid grey;
 	border-top: none;
-	display: flex;
-  	justify-content: center;
-  	align-items: center;
-  	color: #fff;
-  	background: #1dadf5;
+  color: #fff;
+  background: #1dadf5;
 }
 
 .voteCount {

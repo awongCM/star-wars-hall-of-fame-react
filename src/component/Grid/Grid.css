@@ -2,18 +2,9 @@
 	text-align: center;
 }
 
-.gridContainer--row {
-	display: flex;
-	-ms-align-items: center;
-	align-items: center;
-}
-
 .gridContainer--col {
 	flex: 1 2 0;
 	height: 500px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
 	border: 1px solid red;
 	background: #222;
 	border: 2px outset #fff;

@@ -102,7 +102,7 @@ class DetailFilm extends Component {
 					className="returnHomePage"><i className="em em-back"></i></Link>
 
 				<div className="detailContainer">
-					<div className="detailContainer--media"><img src="" alt="" /></div>
+					<div className="detailContainer--media flex-center"><img src="" alt="" /></div>
 					<div className="detailContainer--description">
 						<h1 className="title">{filmData.title}</h1>
 						<p>Director: {filmData.director}</p>
