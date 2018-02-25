@@ -14,7 +14,7 @@
 
 ### Features
 1. You can upvote/downvote your favourite Star Wars character.
-2. You can write or add comments to your favourite Star Wars character as you click on their profile link.  You can clear up your browser's cookies session to reset their comment fields if you want like, as there's backend implementation to store them.
+2. You can write or add comments to your favourite Star Wars character as you click on their profile link.  You can clear up your browser's cookies session to reset their comment fields if you want like, as there's a backend implementation to store them.
 
 ### Instructions to build and deploy
 
@@ -28,7 +28,7 @@ can just do the following.
 
 ### Demo
 
-[logo]: https://github.com/awongCM/star-wars-hall-of-fame-react/blob/master/public/Star_Wars_Hall_of_Fame_App.png
+[logo]: /star-wars-hall-of-fame-react/public/Star_Wars_Hall_of_Fame_App_version1.png
 ![alt text][logo]
 
 **[Demo Link](https://star-wars-hall-of-fame-react.herokuapp.com/)**
