@@ -1,3 +1,4 @@
+// TODO - to DRY up our detail component for other pages
 import React, { Component } from 'react';
 import {Link} from "react-router";
 
