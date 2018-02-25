@@ -34,7 +34,7 @@ can just do the following.
 **[Demo Link](https://star-wars-hall-of-fame-react.herokuapp.com/)**
 
 ### TODOS
-- Add route/link to characters' planets/movies/trivia link content pages
+- ~~Add route/link to characters' planets/movies/trivia link content pages~~
 - Add pagination components for characters/planets/movies etc
 - ~~Make data saving capabilities to be persistent~~
 - ~~Handle multi asynchronous requests logic~~ 
