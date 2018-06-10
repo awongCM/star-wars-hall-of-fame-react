@@ -56,6 +56,16 @@ class Home extends Component {
         <Form data={this.state.data} characterFilter={this.state.characterFilter} 
                                     onHandleCharacterFilter={this.handleCharacterFilter.bind(this)} />
         <Grid pathname={pathname} data={this.state.data} characterFilter={this.state.characterFilter} />
+        {/* TODO - make this into react component */}
+        {/* <nav aria-label="Page navigation">
+          <ul className="pagination flex-center">
+            <li className="page-item"><a className="page-link" href="#">Previous</a></li>
+            <li className="page-item"><a className="page-link" href="#">1</a></li>
+            <li className="page-item"><a className="page-link" href="#">2</a></li>
+            <li className="page-item"><a className="page-link" href="#">3</a></li>
+            <li className="page-item"><a className="page-link" href="#">Next</a></li>
+          </ul>
+        </nav> */}
       </div>
     );
   }

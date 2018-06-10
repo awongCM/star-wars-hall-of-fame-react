@@ -44,3 +44,18 @@ button {
   align-items: center;
 }
 
+/* TODO - pagination */
+.pagination {
+  /* display: inline-block; */
+}
+
+.pagination .page-item {
+  color: black;
+  /* float: left; */
+  list-style-type: none;
+  padding: 8px 16px;
+  text-decoration: none;
+  border: 1px solid #ddd;
+  margin: 0 4px;
+  font-size: 22px;
+}
