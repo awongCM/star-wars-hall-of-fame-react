@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Form from "./../Form/Form";
 import Grid from "./../Grid/Grid";
+import Pagination from './../Pagination/Pagination';
 import * as SWAPI from "./../../services/api";
 
 class Home extends Component {
@@ -51,21 +52,21 @@ class Home extends Component {
 
   render() {
     const { pathname } = this.props.location;
+
+    // TODO to fetch actual pagination data from API server
+    const paginationData = {
+      total_pages: 4,
+      current_page: 1,
+      total_count: 39,
+      max_per_page: 10
+    };
+
     return (
       <div>
         <Form data={this.state.data} characterFilter={this.state.characterFilter} 
                                     onHandleCharacterFilter={this.handleCharacterFilter.bind(this)} />
         <Grid pathname={pathname} data={this.state.data} characterFilter={this.state.characterFilter} />
-        {/* TODO - make this into react component */}
-        {/* <nav aria-label="Page navigation">
-          <ul className="pagination flex-center">
-            <li className="page-item"><a className="page-link" href="#">Previous</a></li>
-            <li className="page-item"><a className="page-link" href="#">1</a></li>
-            <li className="page-item"><a className="page-link" href="#">2</a></li>
-            <li className="page-item"><a className="page-link" href="#">3</a></li>
-            <li className="page-item"><a className="page-link" href="#">Next</a></li>
-          </ul>
-        </nav> */}
+        <Pagination paginationData={paginationData}></Pagination>
       </div>
     );
   }
