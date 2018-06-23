@@ -38,3 +38,4 @@ can just do the following.
 - Add pagination components for characters/planets/movies etc
 - ~~Make data saving capabilities to be persistent~~
 - ~~Handle multi asynchronous requests logic~~ 
+- To decide whether I should use JSX instead of js moving forth
