@@ -35,7 +35,7 @@ can just do the following.
 
 ### History
 Version 1.0
-* Only Star Wars people data API endpoint is catered for.
+* Only Star Wars `people` data API endpoint is catered for.
 
 ### TODOS
 - ~~Add route/link to characters' planets/movies/trivia link content pages~~
