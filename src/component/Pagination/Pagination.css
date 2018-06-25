@@ -27,3 +27,8 @@
   font-weight: 600;
   margin: 20px 0;  
 }
+
+.pagination-message {
+  text-align: center;
+  display: block;
+}

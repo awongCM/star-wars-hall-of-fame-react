@@ -10,7 +10,8 @@ class Home extends Component {
     super(props);
     this.state = {
        data: [],
-       characterFilter: ""
+       characterFilter: "",
+       pagination: null
     };
   }
 
@@ -25,16 +26,20 @@ class Home extends Component {
       ).then((response) => {
         return response.json();
       }).then((myJSON) => {
-        return this.refineData(myJSON.results);
+        return this.refineData(myJSON);
       }).then((refinedData) => {
-        self.setState({data: refinedData});
+        self.setState({
+          data: refinedData.newList,
+          pagination: refinedData.pagination
+        });
       });
   }
 
-  refineData(parsedData) {
-    let newProps = [];
+  refineData(rawJSONData) {
+    // assuming this are the correct SWAPI raw data
+    const {count, next, previous, results } = rawJSONData;
 
-    newProps = parsedData.map((item, i) => {
+    const newList = results.map((item, i) => {
         item.id = i;
         item.up_vote = 0;
         item.down_vote = 0;
@@ -42,8 +47,19 @@ class Home extends Component {
         return item;
     });
 
-    //console.log("Home newprops", newProps);
-    return newProps;
+    const pagination = {
+      count: count,
+      next: next,
+      previous: previous
+    };
+
+    console.log("Home newList", newList);
+    console.log("Home pagination", pagination);
+    return {
+      newList: newList,
+      pagination: pagination
+    };
+    
   }
 
   handleCharacterFilter(characterFilter) {
@@ -53,19 +69,21 @@ class Home extends Component {
   render() {
     const { pathname } = this.props.location;
 
-    // TODO to fetch actual pagination data from API server
+    const { data, characterFilter, pagination } = this.state;
+
     const paginationData = {
-      total_pages: 4,
-      current_page: 1,
-      total_count: 39,
-      max_per_page: 10
+      total_pages: (pagination !== null) ? Math.ceil(pagination.count / data.length) : null,
+      next: (pagination !== null) ? pagination.next : null,
+      previous: (pagination !== null) ? pagination.previous : null,
+      total_count: (pagination !== null) ? pagination.count : null,
+      max_per_page: (pagination !== null) ? data.length : null
     };
 
     return (
       <div>
-        <Form data={this.state.data} characterFilter={this.state.characterFilter} 
+        <Form data={data} characterFilter={characterFilter} 
                                     onHandleCharacterFilter={this.handleCharacterFilter.bind(this)} />
-        <Grid pathname={pathname} data={this.state.data} characterFilter={this.state.characterFilter} />
+        <Grid pathname={pathname} data={data} characterFilter={characterFilter} />
         <Pagination paginationData={paginationData}></Pagination>
       </div>
     );

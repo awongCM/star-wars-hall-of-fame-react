@@ -6,66 +6,77 @@ export class Pagination extends Component {
   constructor(props){
     super(props);
 
-    // TODO - for props data
+    const { total_pages, next, previous, total_count, max_per_page } = this.props.paginationData;
+
     this.state = {
-      allowPrevious: this.props.paginationData.current_page !== 1,
-      allowNext: this.props.paginationData.current_page !== this.props.paginationData.total_pages,
-      previousPage: this.props.paginationData.current_page - 1,
-      nextPage: this.props.paginationData.current_page + 1,
-      currentPage: this.props.paginationData.current_page
+      total_pages: total_pages,
+      next: next,
+      previous: previous,
+      total_count: total_count,
+      max_per_page: max_per_page,
+      allowPrevious: (previous !== null),
+      allowNext: (next !== null)
     };
   }
 
-  handlePreviousReq() {
-    if(this.state.allowPrevious && this.state.previousPage > 0){
-      console.log('go previous page');
-      const newCurrentPage = --this.state.currentPage;
-      const newPreviousPage = newCurrentPage - 1;
-      const newNextPage = newCurrentPage +1;
+  componentWillUpdate(nextProps) {
+    if (this.props !== nextProps) {
       this.setState({
-        currentPage: newCurrentPage, 
-        previousPage: newPreviousPage, 
-        nextPage: newNextPage,
-        allowPrevious: (newCurrentPage !== 1),
-        allowNext: (newCurrentPage !== this.props.paginationData.total_pages)
+        total_pages: nextProps.paginationData.total_pages,
+        next: nextProps.paginationData.next,
+        previous: nextProps.paginationData.previous,
+        total_count: nextProps.paginationData.total_count,
+        max_per_page: nextProps.paginationData.max_per_page,
+        allowPrevious: (nextProps.paginationData.previous !== null),
+        allowNext: (nextProps.paginationData.next !== null)
       });
     }
   }
 
+  // TODO - for parent props to handle event clicks
+  handlePreviousReq() {
+    
+    console.log('go previous for the parent props');
+  }
+
+  // TODO - for parent props to handle event clicks
   handleNextReq() {
-    if (this.state.allowNext && this.state.nextPage < this.props.paginationData.total_count) {
-      console.log('go next page');
-      const newCurrentPage = ++this.state.currentPage;
-      const newPreviousPage = newCurrentPage - 1;
-      const newNextPage = newCurrentPage +1;
-      this.setState({
-        currentPage: newCurrentPage, 
-        previousPage: newPreviousPage, 
-        nextPage: newNextPage,
-        allowPrevious: (newCurrentPage !== 1),
-        allowNext: (newCurrentPage !== this.props.paginationData.total_pages)
-      });
-    }
+   
+    console.log('go next for the parent props');
   }
 
   render() {
-    return (
-      <div className="pagination-container">
-        <nav aria-label="Page navigation">
+
+    const { total_pages, next, previous, total_count, max_per_page, allowNext, allowPrevious } = this.state;
+    
+    const renderPagination = (total_pages !== null) ? (
+      <div>
+       <nav aria-label="Page navigation">
           <ul className="pagination flex-center">
-            <li className={"page-item " + (this.state.allowPrevious ? '': 'disabled')}   onClick={this.handlePreviousReq.bind(this)}>
+            <li className={"page-item " + (allowPrevious ? '': 'disabled')} onClick={this.handlePreviousReq.bind(this)}>
               <a className="page-link"> &larr; Prev</a>  
             </li>
-            <li className="page-item">
-              <a className="page-link">{this.state.currentPage}</a>
-            </li>
-            <li className={"page-item " + (this.state.allowNext ? '': 'disabled')}  onClick={this.handleNextReq.bind(this)}>
+            {/* <li className="page-item">
+              <a className="page-link">{currentPage}</a>
+            </li> */}
+            <li className={"page-item " + (allowNext ? '': 'disabled')}  onClick={this.handleNextReq.bind(this)}>
                 <a className="page-link">Next &rarr;</a>
             </li>
           </ul>
         </nav>
-        <strong className="pagination-counter"> Total Characters: {this.props.paginationData.total_count}</strong>
-      </div> 
+        <strong className="pagination-counter"> Total Characters: {total_count}</strong>
+      </div>
+       
+    ) : (
+      <div>
+        <span className="pagination-message"></span>
+      </div>
+    );
+
+    return (
+      <div className="pagination-container">
+        {renderPagination}
+      </div>
     )
   }
 }
