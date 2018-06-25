@@ -33,6 +33,10 @@ can just do the following.
 
 **[Demo Link](https://star-wars-hall-of-fame-react.herokuapp.com/)**
 
+### History
+Version 1.0
+* Only Star Wars people data API endpoint is catered for.
+
 ### TODOS
 - ~~Add route/link to characters' planets/movies/trivia link content pages~~
 - Add pagination components for characters/planets/movies etc
