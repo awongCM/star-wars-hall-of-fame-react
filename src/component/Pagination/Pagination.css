@@ -14,3 +14,16 @@
   font-size: 22px;
   cursor: pointer;
 }
+
+.pagination .page-item.disabled {
+  cursor: default;
+  color: #ada7a7;
+}
+
+.pagination-counter {
+  display: block;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 600;
+  margin: 20px 0;  
+}

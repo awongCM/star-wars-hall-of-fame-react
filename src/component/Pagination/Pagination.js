@@ -11,9 +11,7 @@ export class Pagination extends Component {
       allowPrevious: this.props.paginationData.current_page !== 1,
       allowNext: this.props.paginationData.current_page !== this.props.paginationData.total_pages,
       previousPage: this.props.paginationData.current_page - 1,
-      firstPage: (this.props.paginationData.current_page === 1),
       nextPage: this.props.paginationData.current_page + 1,
-      finalPage: this.props.paginationData.current_page === this.props.paginationData.total_pages - 1,
       currentPage: this.props.paginationData.current_page
     };
   }
@@ -52,34 +50,22 @@ export class Pagination extends Component {
 
   render() {
     return (
-      <nav aria-label="Page navigation">
-        <ul className="pagination flex-center">
-          <li className="page-item" onClick={this.handlePreviousReq.bind(this)}>
-            <a className="page-link"> &larr; Prev</a>  
-          </li>
-          <li className="page-item">
-            <div className="inline-pagination">
-              Displaying Results
-              { this.state.firstPage ?
-                1 :
-                this.state.previousPage * this.props.paginationData.max_per_page
-              }
-              to 
-              { this.props.paginationData.finalPage ?
-                this.props.paginationData.total_count :
-                this.props.paginationData.current_page *  this.props.paginationData.max_per_page
-              }
-              <em>
-                Page No: {this.state.currentPage}
-              </em>
-              <strong>Total Results: {this.props.paginationData.total_count}</strong>
-            </div>
-          </li>
-          <li className="page-item" onClick={this.handleNextReq.bind(this)}>
-              <a className="page-link">Next &rarr;</a>
-          </li>
-        </ul>
-      </nav>
+      <div className="pagination-container">
+        <nav aria-label="Page navigation">
+          <ul className="pagination flex-center">
+            <li className={"page-item " + (this.state.allowPrevious ? '': 'disabled')}   onClick={this.handlePreviousReq.bind(this)}>
+              <a className="page-link"> &larr; Prev</a>  
+            </li>
+            <li className="page-item">
+              <a className="page-link">{this.state.currentPage}</a>
+            </li>
+            <li className={"page-item " + (this.state.allowNext ? '': 'disabled')}  onClick={this.handleNextReq.bind(this)}>
+                <a className="page-link">Next &rarr;</a>
+            </li>
+          </ul>
+        </nav>
+        <strong className="pagination-counter"> Total Characters: {this.props.paginationData.total_count}</strong>
+      </div> 
     )
   }
 }
