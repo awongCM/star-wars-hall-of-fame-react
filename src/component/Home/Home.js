@@ -39,6 +39,7 @@ class Home extends Component {
     // assuming this are the correct SWAPI raw data
     const {count, next, previous, results } = rawJSONData;
 
+    // TODO - will probably scrape for the SWAPI resources and generate the unique ids for navigating individual resources as a workaround 
     const newList = results.map((item, i) => {
         item.id = i;
         item.up_vote = 0;

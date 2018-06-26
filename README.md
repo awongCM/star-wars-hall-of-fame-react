@@ -36,6 +36,8 @@ can just do the following.
 ### History
 Version 1.0
 * Only Star Wars `people` data API endpoint is catered for.
+* Pagination functionality catered for `people` endpoints
+* Since implementing pagination functionality above, navigating other character profile detail on following pages are not working correctly as SWAPI hasn't yet provided `id` property for any of its resource.
 
 ### TODOS
 - ~~Add route/link to characters' planets/movies/trivia link content pages~~
