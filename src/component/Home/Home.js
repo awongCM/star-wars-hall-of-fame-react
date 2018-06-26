@@ -19,10 +19,10 @@ class Home extends Component {
      this.fetchData();    
   }
   
-  fetchData() {
+  fetchData(url = SWAPI.url) {
     let self = this;
 
-    fetch(SWAPI.url, SWAPI.initHeaders()
+    fetch(url, SWAPI.initHeaders()
       ).then((response) => {
         return response.json();
       }).then((myJSON) => {
@@ -66,6 +66,16 @@ class Home extends Component {
     this.setState({characterFilter: characterFilter});
   }
 
+  handleNextPage(page_url){
+    console.log('next page', page_url);
+    this.fetchData(page_url);
+  }
+
+  handlePreviousPage(page_url){
+    console.log('prev page', page_url);
+    this.fetchData(page_url);
+  }
+
   render() {
     const { pathname } = this.props.location;
 
@@ -84,7 +94,7 @@ class Home extends Component {
         <Form data={data} characterFilter={characterFilter} 
                                     onHandleCharacterFilter={this.handleCharacterFilter.bind(this)} />
         <Grid pathname={pathname} data={data} characterFilter={characterFilter} />
-        <Pagination paginationData={paginationData}></Pagination>
+        <Pagination paginationData={paginationData} onHandleNextPage={this.handleNextPage.bind(this)} onHandlePreviousPage={this.handlePreviousPage.bind(this)}></Pagination>
       </div>
     );
   }
