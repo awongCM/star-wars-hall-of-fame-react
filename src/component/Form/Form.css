@@ -30,26 +30,34 @@
     vertical-align: middle;
 }
 
-/* TODO */
 .formContainer--selectControl {
-    display: none;
-    /* display: table-cell; */
+    display: table-cell;
     float: left;
-    width: 20%;
-    height: 34px;
+    width: 15%;
+    height: 40px;
     padding: 6px 12px;
     font-size: 14px;
     line-height: 1.42857143;
     color: #555;
-    background-color: #fff;
+    background-color: #ededed;
+    cursor: pointer;
     background-image: none;
     border: 1px solid #ccc;
-    border-radius: 4px;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-    -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
-    -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
-    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    text-align: center;
+    
+    background-image:
+      linear-gradient(45deg, transparent 50%, gray 50%),
+      linear-gradient(135deg, gray 50%, transparent 50%),
+      linear-gradient(to right, #ccc, #ccc);
+    background-position:
+      calc(100% - 20px) calc(1em + 2px),
+      calc(100% - 15px) calc(1em + 2px),
+      calc(100% - 2.5em) 0.5em;
+    background-size:
+      5px 5px,
+      5px 5px,
+      1px 1.5em;
+    background-repeat: no-repeat;
 }
 
 .formContainer--textControl {
@@ -59,16 +67,13 @@
 	position: relative;
     z-index: 2;
     float: left;
-    width: 100%;
+    width: 85%;
     margin-bottom: 0;
     padding: 6px 12px;
     font-size: 14px;
     color: #555;
     background-color: #fff;
     border: 1px solid #ccc;
-    border-radius: 4px;
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
     -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
     box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
 }

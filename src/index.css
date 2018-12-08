@@ -32,17 +32,21 @@ textarea {
 }
 button {
 	border: 0;
-    outline: none;
-    height: 40px;
-    width: 70px;
-    background: #dcdcdc;
-    font-size: 18px;
-    font-weight: 400;
-    display: inline-block;
-    vertical-align: top;
-    cursor: pointer;
+  outline: none;
+  height: 40px;
+  width: 70px;
+  background: #dcdcdc;
+  font-size: 18px;
+  font-weight: 400;
+  display: inline-block;
+  vertical-align: top;
+  cursor: pointer;
 }
 
+select {
+  -webkit-appearance: none;
+  -webkit-border-radius: 0px;
+}
 
 /*Utility styles*/
 .flex-center {
