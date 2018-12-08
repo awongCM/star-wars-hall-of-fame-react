@@ -22,7 +22,7 @@ export function requestURLs(requested_URLs) {
 	return requested_URLs.map( (requested_URL) => requestURL(requested_URL));
 }
 
-async function _requestURL (requested_URL) {
+async function _requestURL(requested_URL) {
 	try {
 
 		let response = await fetch(requested_URL, initHeaders());
