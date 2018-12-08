@@ -44,4 +44,5 @@ Version 1.0
 - Add pagination components for characters/planets/movies etc
 - ~~Make data saving capabilities to be persistent~~
 - ~~Handle multi asynchronous requests logic~~ 
-- To decide whether I should use JSX instead of js moving forth
+- ~~To decide whether I should use JSX instead of js moving forth~~
+- Provite MongoDB service for hosting star wars images
