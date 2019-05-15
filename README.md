@@ -3,6 +3,7 @@
 ## Table of Contents
 
 ### Front End Tech Stack
+
 - React JS
 - React Router
 - CSS3 - written using SMACSS 
@@ -13,6 +14,7 @@
 - Star Wars API - `https://swapi.co/`
 
 ### Features
+
 1. You can upvote/downvote your favourite Star Wars character.
 2. You can write or add comments to your favourite Star Wars character as you click on their profile link.  You can clear up your browser's cookies session to reset their comment fields if you want like, as there's a backend implementation to store them.
 
@@ -34,12 +36,15 @@ can just do the following.
 **[Demo Link](https://star-wars-hall-of-fame-react.herokuapp.com/)**
 
 ### History
+
 Version 1.0
-* Only Star Wars `people` data API endpoint is catered for.
-* Pagination functionality catered for `people` endpoints
-* Since implementing pagination functionality above, navigating other character profile detail on following pages are not working correctly as SWAPI hasn't yet provided `id` property for any of its resource.
+
+- Only Star Wars `people` data API endpoint is catered for.
+- Pagination functionality catered for `people` endpoints
+- Since implementing pagination functionality above, navigating other character profile detail on following pages are not working correctly as SWAPI hasn't yet provided `id` property for any of its resource.
 
 ### TODOS
+
 - ~~Add route/link to characters' planets/movies/trivia link content pages~~
 - Add pagination components for characters/planets/movies etc
 - ~~Make data saving capabilities to be persistent~~
