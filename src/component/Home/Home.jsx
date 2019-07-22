@@ -19,6 +19,7 @@ class Home extends Component {
     this.fetchData();
   }
 
+  // TODO - using queryType to reach api endpoint query
   fetchData(url = SWAPI.url) {
     let self = this;
 
