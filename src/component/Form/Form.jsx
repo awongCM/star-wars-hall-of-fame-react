@@ -6,6 +6,10 @@ class Form extends Component {
     this.props.onHandleCharacterFilter(e.target.value);
   }
 
+  handleDropdownQueryType(e) {
+    this.props.onHandleDropdownQueryType(e.target.value);
+  }
+
   render() {
     return (
       <div className="formContainer">
@@ -13,8 +17,10 @@ class Form extends Component {
           <label htmlFor="inputControl" className="formContainer--searchLabel">
             Filter By:
           </label>
-          {/* TODO - to complete dropdown */}
-          <select className="formContainer--selectControl">
+          <select
+            className="formContainer--selectControl"
+            onChange={this.handleDropdownQueryType.bind(this)}
+          >
             <option value="people">Character</option>
             <option value="planets">Planet</option>
             <option value="films">Movie</option>
