@@ -1,11 +1,6 @@
 //API Request Settings
 
-// TODOS - other urls here
-// Planet - https://swapi.co/api/planets/
-// Movie - https://swapi.co/api/films/
-// Starship - https://swapi.co/api/starships/
-
-export const url = `https://swapi.co/api/people/`;
+export const defaultURL = `https://swapi.co/api/people/`;
 
 export function initHeaders() {
   return {
@@ -35,4 +30,26 @@ async function _requestURL(requested_URL) {
   } catch (error) {
     return error;
   }
+}
+
+export function fetchURLBy(queryType) {
+  let url = "";
+  switch (queryType) {
+    case "planets":
+      url = "https://swapi.co/api/planets/";
+      break;
+
+    case "films":
+      url = "https://swapi.co/api/films/";
+      break;
+
+    case "starships":
+      url = "https://swapi.co/api/starships/";
+      break;
+    default:
+      url = defaultURL;
+  }
+  console.log("url", url);
+
+  return url;
 }

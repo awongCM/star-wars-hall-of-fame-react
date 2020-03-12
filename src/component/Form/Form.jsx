@@ -21,7 +21,9 @@ class Form extends Component {
             className="formContainer--selectControl"
             onChange={this.handleDropdownQueryType.bind(this)}
           >
-            <option value="people">Character</option>
+            <option value="people" selected>
+              Character
+            </option>
             <option value="planets">Planet</option>
             <option value="films">Movie</option>
             <option value="starships">Starship</option>

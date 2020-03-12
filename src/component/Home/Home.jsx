@@ -4,6 +4,19 @@ import Grid from "./../Grid/Grid";
 import Pagination from "./../Pagination/Pagination";
 import * as SWAPI from "./../../services/api";
 
+// TODO: to merge fetchDataTypeBy with fetchData methods into one
+const fetchDataTypeBy = queryType => {
+  let url = SWAPI.fetchURLBy(queryType);
+
+  fetch(url, SWAPI.initHeaders())
+    .then(response => {
+      return response.json();
+    })
+    .then(showMeMyJSON => {
+      console.log(showMeMyJSON);
+    });
+};
+
 class Home extends Component {
   constructor(props) {
     super(props);
@@ -19,8 +32,7 @@ class Home extends Component {
     this.fetchData();
   }
 
-  // TODO - using queryType to reach api endpoint query
-  fetchData(url = SWAPI.url) {
+  fetchData(url = SWAPI.defaultURL) {
     let self = this;
 
     fetch(url, SWAPI.initHeaders())
@@ -80,7 +92,7 @@ class Home extends Component {
   }
 
   handleDropdownQueryType(queryType) {
-    this.setState({ queryType: queryType });
+    this.setState({ queryType: queryType }, () => fetchDataTypeBy(queryType));
   }
 
   render() {
