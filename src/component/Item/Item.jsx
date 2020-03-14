@@ -58,6 +58,15 @@ class Item extends Component {
       homePlanet: {},
       films: [],
       loaded: false
+      // todos for other dropdown types
+      /*
+			**PLANETS**
+			residents, films
+			**FILMS**
+			characters, planets, starships
+			**STARSHIPS**
+			pilots, films
+			*/
     };
     //Not sure if this is good practice
     this.upVote = 0;
