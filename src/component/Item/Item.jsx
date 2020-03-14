@@ -183,32 +183,24 @@ class Item extends Component {
     const planetEndPointURL = "https://swapi.co/api/planets/",
       filmEndPointURL = "https://swapi.co/api/film/";
 
-    let triviaContent = null;
+    let planet_id = 0,
+      filmsURL = [];
+    const hasTriviaData = homePlanet !== {} && films.length !== 0;
 
-    if (homePlanet !== {} && films.length !== 0) {
+    if (hasTriviaData) {
       let id_suffix = stringUtil.fetchIDSuffix(
         homePlanet.url,
         planetEndPointURL
       );
-      let planet_id = stringUtil.trimSpecialChars(id_suffix);
+      planet_id = stringUtil.trimSpecialChars(id_suffix);
 
       // Loop through the films array
-      let filmsURL = films.map(film => {
+      filmsURL = films.map(film => {
         let id_suffix = stringUtil.fetchIDSuffix(film.url, filmEndPointURL);
         let film_id = stringUtil.trimSpecialChars(id_suffix);
         film.id = film_id;
         return film;
       });
-
-      triviaContent = TriviaContent({
-        title: "Planet of Origin",
-        description: "Films played in",
-        planet_id: planet_id,
-        homePlanet: homePlanet,
-        filmsURL: filmsURL
-      });
-    } else {
-      triviaContent = LoadingIcon;
     }
 
     return (
@@ -223,7 +215,17 @@ class Item extends Component {
             >
               {characterData.name}
             </Link>
-            {triviaContent}
+            {hasTriviaData ? (
+              <TriviaContent
+                title={"Planet of Origin"}
+                description={"Films played in"}
+                planet_id={planet_id}
+                homePlanet={homePlanet}
+                filmsURL={filmsURL}
+              />
+            ) : (
+              <LoadingIcon />
+            )}
           </div>
           <div className="voteContainer flex-center">
             <div
