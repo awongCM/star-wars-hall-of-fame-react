@@ -1,6 +1,9 @@
 //API Request Settings
 
-export const defaultURL = `https://swapi.co/api/people/`;
+export const defaultURL = `https://swapi.co/api/people/`,
+  planetsURL = "https://swapi.co/api/planets/",
+  filmsURL = "https://swapi.co/api/films/",
+  starshipsURL = "https://swapi.co/api/starships/";
 
 export function initHeaders() {
   return {
@@ -36,15 +39,15 @@ export function fetchURLBy(queryType) {
   let url = "";
   switch (queryType) {
     case "planets":
-      url = "https://swapi.co/api/planets/";
+      url = planetsURL;
       break;
 
     case "films":
-      url = "https://swapi.co/api/films/";
+      url = filmsURL;
       break;
 
     case "starships":
-      url = "https://swapi.co/api/starships/";
+      url = starshipsURL;
       break;
     default:
       url = defaultURL;

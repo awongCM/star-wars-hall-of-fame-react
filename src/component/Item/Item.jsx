@@ -180,8 +180,8 @@ class Item extends Component {
       overallPopularity = characterData.overall_vote;
 
     const { homePlanet, films } = this.state;
-    const planetEndPointURL = "https://swapi.co/api/planets/",
-      filmEndPointURL = "https://swapi.co/api/film/";
+    const planetEndPointURL = SWAPI.planetsURL,
+      filmEndPointURL = SWAPI.filmsURL;
 
     let planet_id = 0,
       filmsURL = [];
