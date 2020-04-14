@@ -1,132 +1,148 @@
 // TODO - to DRY up our detail component for other pages
-import React, { Component } from 'react';
-import {Link} from "react-router";
+import React, { Component } from "react";
+import { Link } from "react-router";
 
-import './DetailPlanet.css';
-import * as localStorageService from '../../services/localStorage';
+import "./DetailPlanet.css";
+import * as localStorageService from "../../services/localStorage";
 
 class DetailPlanet extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			homePlanetData: {},
-			homePlanetComments: []
-		};
-	}
+  constructor(props) {
+    super(props);
+    this.state = {
+      homePlanetData: {},
+      homePlanetComments: [],
+    };
+  }
 
-	componentDidMount() {
+  componentDidMount() {
+    const availableClientData = this.loadPersistedClientData();
 
-		const availableClientData = this.loadPersistedClientData();
+    if (availableClientData !== undefined) {
+      this.setState({
+        homePlanetData: availableClientData.homePlanetData,
+        homePlanetComments: availableClientData.homePlanetComments,
+      });
+    } else {
+      // we have nothing to begin with
+      this.fetchData();
+    }
+  }
 
-		if (availableClientData !== undefined) {
-			this.setState({
-				homePlanetData: availableClientData.homePlanetData, 
-				homePlanetComments: availableClientData.homePlanetComments
-			});
-		}
-		else { // we have nothing to begin with
-			this.fetchData();
-		}
-	}
+  loadPersistedClientData() {
+    //our key value to fetch and store locals
+    const { pathname } = this.props.location;
 
-	loadPersistedClientData() {
-		 //our key value to fetch and store locals
-		const { pathname } = this.props.location;
-		
-		console.log('loadClientData', localStorageService.loadClientData(pathname));
-		return localStorageService.loadClientData(pathname);
-	}
+    console.log("loadClientData", localStorageService.loadClientData(pathname));
+    return localStorageService.loadClientData(pathname);
+  }
 
-	fetchData() {
-	    let self = this;
+  fetchData() {
+    let self = this;
 
-	    //there's not zero-based index search for character api
-			let param_index = parseInt(this.props.params.id);
-			
-			//For some reason - you have to explicitly pass query params instead of using headers
-	    fetch(`https://swapi.co/api/planets/${param_index}?format=json`
-	      ).then((response) => {
-	        return response.json();
-	      }).then((myJSON) => {
-	      	return this.refineData(myJSON);
-	      }).then((refinedCharData) => {
-	        self.setState({homePlanetData: refinedCharData});
-					console.log(refinedCharData);					
-	      });
-	}
+    //there's not zero-based index search for character api
+    let param_index = parseInt(this.props.params.id);
 
-	refineData(parsedData) {
-	    
-	   parsedData.comments = [];
-	   return parsedData;
-	}
+    //For some reason - you have to explicitly pass query params instead of using headers
+    fetch(`https://swapi.dev/api/planets/${param_index}?format=json`)
+      .then((response) => {
+        return response.json();
+      })
+      .then((myJSON) => {
+        return this.refineData(myJSON);
+      })
+      .then((refinedCharData) => {
+        self.setState({ homePlanetData: refinedCharData });
+        console.log(refinedCharData);
+      });
+  }
 
-	saveComment(e) {
-		let comment = this.refs.commentInput.value;
+  refineData(parsedData) {
+    parsedData.comments = [];
+    return parsedData;
+  }
 
-		//we don't want any empty comments to save
-		if(comment === "") {
-			return;
-		}
+  saveComment(e) {
+    let comment = this.refs.commentInput.value;
 
-		this.state.homePlanetComments.push(comment);
-		this.setState({homePlanetComments: this.state.homePlanetComments}, () => this.persistsClientData());
+    //we don't want any empty comments to save
+    if (comment === "") {
+      return;
+    }
 
-		this.refs.commentInput.value = "";
-	}
+    this.state.homePlanetComments.push(comment);
+    this.setState({ homePlanetComments: this.state.homePlanetComments }, () =>
+      this.persistsClientData()
+    );
 
-	persistsClientData() {
-		const {pathname} = this.props.location;
-		
-		const mergedData = Object.assign({}, 
-			{homePlanetData: this.state.homePlanetData}, 
-			{homePlanetComments: this.state.homePlanetComments}
-		);
+    this.refs.commentInput.value = "";
+  }
 
-		localStorageService.saveClientData(pathname, mergedData);
-	}
+  persistsClientData() {
+    const { pathname } = this.props.location;
 
-	render() {
+    const mergedData = Object.assign(
+      {},
+      { homePlanetData: this.state.homePlanetData },
+      { homePlanetComments: this.state.homePlanetComments }
+    );
 
-		const homePlanetData = this.state.homePlanetData;
-		const comments = this.state.homePlanetComments.map((item, i) => {
-			return (<div key={i} className="comment">{item}</div>)
-		});
+    localStorageService.saveClientData(pathname, mergedData);
+  }
 
-		const heading = (comments.length) ? <h4 className="heading">Comments</h4> : '';
+  render() {
+    const homePlanetData = this.state.homePlanetData;
+    const comments = this.state.homePlanetComments.map((item, i) => {
+      return (
+        <div key={i} className="comment">
+          {item}
+        </div>
+      );
+    });
 
-		return (
-			<div>
-				<Link 
-					to={"/"}
-					className="returnHomePage"><i className="em em-back"></i></Link>
+    const heading = comments.length ? (
+      <h4 className="heading">Comments</h4>
+    ) : (
+      ""
+    );
 
-				<div className="detailContainer">
-					<div className="detailContainer--media flex-center"><img src="" alt="" /></div>
-					<div className="detailContainer--description">
-						<h1 className="title">{homePlanetData.name}</h1>
-						<p>Rotation Period: {homePlanetData.rotation_period}</p>
-						<p>Orbital Period: {homePlanetData.mass}</p>
-						<p>Diameter: {homePlanetData.diameter}</p>
-						<p>Climate: {homePlanetData.climate}</p>
-						<p>Gravity: {homePlanetData.gravity}</p>
-						<p>Surface water: {homePlanetData.surface_water}</p>
-						<p>Population: {homePlanetData.population}</p>
-					</div>
-					
-					<div className="commentInputContainer">
-						<textarea ref="commentInput" placeholder="Enter your comments for this planet! :)" cols="30" rows="5" ></textarea>
-						<button onClick={this.saveComment.bind(this)}>Save</button>
-					</div>
-					<div className="commentSection">
-						{heading}
-						{comments}
-					</div>
-				</div>
-			</div>
-			
-		);
-	}
+    return (
+      <div>
+        <Link to={"/"} className="returnHomePage">
+          <i className="em em-back"></i>
+        </Link>
+
+        <div className="detailContainer">
+          <div className="detailContainer--media flex-center">
+            <img src="" alt="" />
+          </div>
+          <div className="detailContainer--description">
+            <h1 className="title">{homePlanetData.name}</h1>
+            <p>Rotation Period: {homePlanetData.rotation_period}</p>
+            <p>Orbital Period: {homePlanetData.mass}</p>
+            <p>Diameter: {homePlanetData.diameter}</p>
+            <p>Climate: {homePlanetData.climate}</p>
+            <p>Gravity: {homePlanetData.gravity}</p>
+            <p>Surface water: {homePlanetData.surface_water}</p>
+            <p>Population: {homePlanetData.population}</p>
+          </div>
+
+          <div className="commentInputContainer">
+            <textarea
+              ref="commentInput"
+              placeholder="Enter your comments for this planet! :)"
+              cols="30"
+              rows="5"
+            ></textarea>
+            <button onClick={this.saveComment.bind(this)}>Save</button>
+          </div>
+          <div className="commentSection">
+            {heading}
+            {comments}
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
 
 export default DetailPlanet;

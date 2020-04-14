@@ -1,28 +1,28 @@
 //API Request Settings
 
-export const defaultURL = `https://swapi.co/api/people/`,
-  planetsURL = "https://swapi.co/api/planets/",
-  filmsURL = "https://swapi.co/api/films/",
-  starshipsURL = "https://swapi.co/api/starships/";
+export const defaultURL = `https://swapi.dev/api/people/`,
+  planetsURL = "https://swapi.dev/api/planets/",
+  filmsURL = "https://swapi.dev/api/films/",
+  starshipsURL = "https://swapi.dev/api/starships/";
 
 export function initHeaders() {
   return {
     method: "GET",
     cache: "default",
-    accept: "application/json"
+    accept: "application/json",
   };
 }
 
 export function requestURL(requested_URL) {
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     _requestURL(requested_URL)
-      .then(res => resolve(res))
-      .catch(err => reject(err));
+      .then((res) => resolve(res))
+      .catch((err) => reject(err));
   });
 }
 
 export function requestURLs(requested_URLs) {
-  return requested_URLs.map(requested_URL => requestURL(requested_URL));
+  return requested_URLs.map((requested_URL) => requestURL(requested_URL));
 }
 
 async function _requestURL(requested_URL) {
