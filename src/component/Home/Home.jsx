@@ -4,19 +4,6 @@ import Grid from "./../Grid/Grid";
 import Pagination from "./../Pagination/Pagination";
 import * as SWAPI from "./../../services/api";
 
-// TODO: to merge fetchDataTypeBy with fetchData methods into one
-const fetchDataTypeBy = queryType => {
-  let url = SWAPI.fetchURLBy(queryType);
-
-  fetch(url, SWAPI.initHeaders())
-    .then(response => {
-      return response.json();
-    })
-    .then(showMeMyJSON => {
-      console.log(showMeMyJSON);
-    });
-};
-
 class Home extends Component {
   constructor(props) {
     super(props);
@@ -24,7 +11,7 @@ class Home extends Component {
       data: [],
       characterFilter: "",
       pagination: null,
-      queryType: ""
+      queryType: "people",
     };
   }
 
@@ -36,16 +23,16 @@ class Home extends Component {
     let self = this;
 
     fetch(url, SWAPI.initHeaders())
-      .then(response => {
+      .then((response) => {
         return response.json();
       })
-      .then(myJSON => {
+      .then((myJSON) => {
         return this.refineData(myJSON);
       })
-      .then(refinedData => {
+      .then((refinedData) => {
         self.setState({
           data: refinedData.newList,
-          pagination: refinedData.pagination
+          pagination: refinedData.pagination,
         });
       });
   }
@@ -53,6 +40,7 @@ class Home extends Component {
   refineData(rawJSONData) {
     // assuming this are the correct SWAPI raw data
     const { count, next, previous, results } = rawJSONData;
+    const { queryType } = this.state;
 
     // TODO - will probably scrape for the SWAPI resources and generate the unique ids for navigating individual resources as a workaround
     const newList = results.map((item, i) => {
@@ -60,20 +48,21 @@ class Home extends Component {
       item.up_vote = 0;
       item.down_vote = 0;
       item.overall_vote = 0;
+      item.data_type = queryType;
       return item;
     });
 
     const pagination = {
       count: count,
       next: next,
-      previous: previous
+      previous: previous,
     };
 
     console.log("Home newList", newList);
     console.log("Home pagination", pagination);
     return {
       newList: newList,
-      pagination: pagination
+      pagination: pagination,
     };
   }
 
@@ -92,7 +81,10 @@ class Home extends Component {
   }
 
   handleDropdownQueryType(queryType) {
-    this.setState({ queryType: queryType }, () => fetchDataTypeBy(queryType));
+    this.setState({ queryType: queryType }, () => {
+      const url = SWAPI.fetchURLBy(queryType);
+      this.fetchData(url);
+    });
   }
 
   render() {
@@ -106,7 +98,7 @@ class Home extends Component {
       next: pagination !== null ? pagination.next : null,
       previous: pagination !== null ? pagination.previous : null,
       total_count: pagination !== null ? pagination.count : null,
-      max_per_page: pagination !== null ? data.length : null
+      max_per_page: pagination !== null ? data.length : null,
     };
 
     return (
