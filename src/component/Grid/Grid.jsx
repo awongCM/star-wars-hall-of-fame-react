@@ -7,7 +7,7 @@ class Grid extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: this.props.data
+      data: this.props.data,
     };
   }
 
@@ -23,7 +23,7 @@ class Grid extends Component {
     downVote,
     overallPopularity
   ) {
-    let newOrderedData = this.state.data.map(item => {
+    let newOrderedData = this.state.data.map((item) => {
       if (item.id === item_id) {
         item.up_vote = upVote;
         item.down_vote = downVote;
@@ -40,9 +40,18 @@ class Grid extends Component {
     //passed its prop from parent route component
     const { pathname } = this.props;
 
-    let filteredItems = this.state.data.filter(item => {
+    // TODO with data that has either name or title
+    let filteredItems = this.state.data.filter((item) => {
       if (
+        "name" in item &&
         item.name
+          .toLowerCase()
+          .indexOf(this.props.characterFilter.toLowerCase()) !== -1
+      ) {
+        return item;
+      } else if (
+        "title" in item &&
+        item.title
           .toLowerCase()
           .indexOf(this.props.characterFilter.toLowerCase()) !== -1
       ) {
