@@ -17,7 +17,8 @@ class Form extends Component {
           <label htmlFor="inputControl" className="formContainer--searchLabel">
             Filter By:
           </label>
-          <select
+          {/* TODO - hide for now until the other url routes are getting to work */}
+          {/* <select
             className="formContainer--selectControl"
             onChange={this.handleDropdownQueryType.bind(this)}
           >
@@ -27,7 +28,7 @@ class Form extends Component {
             <option value="planets">Planet</option>
             <option value="films">Movie</option>
             <option value="starships">Starship</option>
-          </select>
+          </select> */}
           <input
             type="text"
             id="inputControl"
