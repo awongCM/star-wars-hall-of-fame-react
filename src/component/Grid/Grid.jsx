@@ -37,23 +37,22 @@ class Grid extends Component {
   }
 
   render() {
-    //passed its prop from parent route component
-    const { pathname } = this.props;
+    const { pathname, characterFilter } = this.props;
+
+    const lowerCaseCharacterFilter = characterFilter
+      ? characterFilter.toLowerCase()
+      : "";
 
     // TODO with data that has either name or title
     let filteredItems = this.state.data.filter((item) => {
       if (
         "name" in item &&
-        item.name
-          .toLowerCase()
-          .indexOf(this.props.characterFilter.toLowerCase()) !== -1
+        item.name.toLowerCase().indexOf(lowerCaseCharacterFilter) !== -1
       ) {
         return item;
       } else if (
         "title" in item &&
-        item.title
-          .toLowerCase()
-          .indexOf(this.props.characterFilter.toLowerCase()) !== -1
+        item.title.toLowerCase().indexOf(lowerCaseCharacterFilter) !== -1
       ) {
         return item;
       }

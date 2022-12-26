@@ -1,46 +1,44 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import Form from "./../Form/Form";
 import Grid from "./../Grid/Grid";
 import Pagination from "./../Pagination/Pagination";
 import * as SWAPI from "./../../services/api";
 
-class Home extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      data: [],
-      characterFilter: "",
-      pagination: null,
-      queryType: "people",
-    };
-  }
+const Home = ({ location }) => {
+  const [homePage, setHomePage] = useState({
+    data: [],
+    characterFilter: "",
+    pagination: null,
+    queryType: "people",
+  });
 
-  componentDidMount() {
-    this.fetchData();
-  }
+  useEffect(() => {
+    const { queryType } = homePage;
+    let url = queryType ? SWAPI.fetchURLBy(queryType) : SWAPI.defaultURL;
 
-  fetchData(url = SWAPI.defaultURL) {
-    let self = this;
+    fetchData(url);
+  }, []);
 
+  const fetchData = (url = SWAPI.defaultURL) => {
     fetch(url, SWAPI.initHeaders())
       .then((response) => {
         return response.json();
       })
       .then((myJSON) => {
-        return this.refineData(myJSON);
+        return refineData(myJSON);
       })
       .then((refinedData) => {
-        self.setState({
+        setHomePage({
           data: refinedData.newList,
           pagination: refinedData.pagination,
         });
       });
-  }
+  };
 
-  refineData(rawJSONData) {
+  const refineData = (rawJSONData) => {
     // assuming this are the correct SWAPI raw data
     const { count, next, previous, results } = rawJSONData;
-    const { queryType } = this.state;
+    const { queryType } = homePage;
 
     // TODO - will probably scrape for the SWAPI resources and generate the unique ids for navigating individual resources as a workaround
     const newList = results.map((item, i) => {
@@ -64,64 +62,55 @@ class Home extends Component {
       newList: newList,
       pagination: pagination,
     };
-  }
+  };
 
-  handleCharacterFilter(characterFilter) {
-    this.setState({ characterFilter: characterFilter });
-  }
+  const handleCharacterFilter = (characterFilter) => {
+    setHomePage({ characterFilter: characterFilter });
+  };
 
-  handleNextPage(page_url) {
+  const handleNextPage = (page_url) => {
     console.log("next page", page_url);
-    this.fetchData(page_url);
-  }
+    fetchData(page_url);
+  };
 
-  handlePreviousPage(page_url) {
+  const handlePreviousPage = (page_url) => {
     console.log("prev page", page_url);
-    this.fetchData(page_url);
-  }
+    fetchData(page_url);
+  };
 
-  handleDropdownQueryType(queryType) {
-    this.setState({ queryType: queryType }, () => {
-      const url = SWAPI.fetchURLBy(queryType);
-      this.fetchData(url);
-    });
-  }
+  const handleDropdownQueryType = (queryType) => {
+    setHomePage({ queryType: queryType });
+  };
 
-  render() {
-    const { pathname } = this.props.location;
+  const { pathname } = location;
 
-    const { data, characterFilter, pagination } = this.state;
+  const { data, characterFilter, pagination } = homePage;
 
-    const paginationData = {
-      total_pages:
-        pagination !== null ? Math.ceil(pagination.count / data.length) : null,
-      next: pagination !== null ? pagination.next : null,
-      previous: pagination !== null ? pagination.previous : null,
-      total_count: pagination !== null ? pagination.count : null,
-      max_per_page: pagination !== null ? data.length : null,
-    };
+  const paginationData = {
+    total_pages:
+      pagination !== null ? Math.ceil(pagination.count / data.length) : null,
+    next: pagination !== null ? pagination.next : null,
+    previous: pagination !== null ? pagination.previous : null,
+    total_count: pagination !== null ? pagination.count : null,
+    max_per_page: pagination !== null ? data.length : null,
+  };
 
-    return (
-      <div>
-        <Form
-          data={data}
-          characterFilter={characterFilter}
-          onHandleCharacterFilter={this.handleCharacterFilter.bind(this)}
-          onHandleDropdownQueryType={this.handleDropdownQueryType.bind(this)}
-        />
-        <Grid
-          pathname={pathname}
-          data={data}
-          characterFilter={characterFilter}
-        />
-        <Pagination
-          paginationData={paginationData}
-          onHandleNextPage={this.handleNextPage.bind(this)}
-          onHandlePreviousPage={this.handlePreviousPage.bind(this)}
-        />
-      </div>
-    );
-  }
-}
+  return (
+    <div>
+      <Form
+        data={data}
+        characterFilter={characterFilter}
+        onHandleCharacterFilter={handleCharacterFilter}
+        onHandleDropdownQueryType={handleDropdownQueryType}
+      />
+      <Grid pathname={pathname} data={data} characterFilter={characterFilter} />
+      <Pagination
+        paginationData={paginationData}
+        onHandleNextPage={handleNextPage}
+        onHandlePreviousPage={handlePreviousPage}
+      />
+    </div>
+  );
+};
 
 export default Home;
