@@ -82,18 +82,35 @@ const Home = ({ location }) => {
     setHomePage({ queryType: queryType });
   };
 
+  const constructPaginationData = (data, pagination) => {
+    let total_pages = null,
+      next = null,
+      previous = null,
+      total_count = null,
+      max_per_page = null;
+
+    if (pagination) {
+      total_pages = Math.ceil(pagination.count / data.length);
+      next = pagination.next;
+      previous = pagination.previous;
+      total_count = pagination.count;
+      max_per_page = data.length;
+    }
+
+    return {
+      total_pages,
+      next,
+      previous,
+      total_count,
+      max_per_page,
+    };
+  };
+
   const { pathname } = location;
 
   const { data, characterFilter, pagination } = homePage;
 
-  const paginationData = {
-    total_pages:
-      pagination !== null ? Math.ceil(pagination.count / data.length) : null,
-    next: pagination !== null ? pagination.next : null,
-    previous: pagination !== null ? pagination.previous : null,
-    total_count: pagination !== null ? pagination.count : null,
-    max_per_page: pagination !== null ? data.length : null,
-  };
+  const paginationData = constructPaginationData(data, pagination);
 
   return (
     <div>
