@@ -51,4 +51,4 @@ Version 1.0
 - ~~Handle multi asynchronous requests logic~~ 
 - ~~To decide whether I should use JSX instead of js moving forth~~
 - Provide MongoDB service for hosting star wars images
-- Refactored class-based components to make use of hooks
+- ~~Refactored class-based components to make use of hooks~~
