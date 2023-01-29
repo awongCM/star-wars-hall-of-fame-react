@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useState, useEffect } from "react";
 import { Link } from "react-router";
 
 import "./../Grid/Grid.css";
@@ -23,7 +23,7 @@ const TriviaContent = ({
   description,
   planet_id,
   homePlanet,
-  filmsURL
+  filmsURL,
 }) => (
   <div className="triviaContent">
     <div className="planetLink">
@@ -51,43 +51,97 @@ const TriviaContent = ({
   </div>
 );
 
-class Item extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      homePlanet: {},
-      films: [],
-      loaded: false
-      // todos for other dropdown types
-      /*
-			**PLANETS**
-			residents, films
-			**FILMS**
-			characters, planets, starships
-			**STARSHIPS**
-			pilots, films
-			*/
+// HOOKS
+const Item = (props) => {
+  const [itemsPage, setItemsPage] = useState({
+    homePlanet: {},
+    films: [],
+    loaded: false,
+    // todos for other dropdown types
+    /*
+    **PLANETS**
+    residents, films
+    **FILMS**
+    characters, planets, starships
+    **STARSHIPS**
+    pilots, films
+    */
+  });
+
+  // NB: this is actually not the latest best practiced to combine didMount and didUpdate conditional check logic here
+  // have to check on the community what they say later on this useeffect design..
+  const [didMount, setDidMount] = useState(false);
+
+  //Not sure if this is good practice
+  let upVote = 0 || props.characterData.up_vote;
+  let downVote = 0 || props.characterData.down_vote;
+
+  // for componentDidMount logic
+  useEffect(() => {
+    const { item_id, pathname } = props;
+    console.log("item_id to find", item_id);
+
+    const fetchHomePlanetAllFilms = async () => {
+      const data = await localStorageService.loadClientData(pathname);
+      console.log("data", data);
+
+      //load found trivia
+      if (data !== undefined) {
+        console.log(
+          "Found item_id: ",
+          data.find((item) => item.item_id === item_id)
+        );
+
+        const item_data = await data.find((item) => item.item_id === item_id);
+        console.log("about to set loaded to true...");
+        setItemsPage({
+          homePlanet: item_data.homePlanet,
+          films: item_data.films,
+          loaded: true,
+        });
+      } else {
+        //otherwise fetch character trivia
+
+        const { characterData } = props,
+          homePlanetURL = characterData.homeworld,
+          allFilmsURLs = characterData.films;
+
+        const result = await SWAPI.requestURL(homePlanetURL);
+
+        console.log("homePlanetURL result", result);
+
+        const results = await Promise.all(SWAPI.requestURLs(allFilmsURLs));
+
+        console.log("filmsURL and homePlanetURL results", result, results);
+
+        setItemsPage({ homePlanet: result, films: results });
+
+        // console.log("results: this.setStateAsync({homePlanet: result, films: results})");
+      }
+      setDidMount(true);
+      console.log("didMount logic");
     };
-    //Not sure if this is good practice
-    this.upVote = 0;
-    this.downVote = 0;
-  }
 
-  setStateAsync(state) {
-    return new Promise((resolve, reject) => {
-      this.setState(state, resolve);
-    });
-  }
+    fetchHomePlanetAllFilms();
+  }, []);
 
-  componentDidUpdate() {
-    const { loaded } = this.state;
+  // for componentDidUpdate
+  // this code has a bug with paginating character data after item page is already mounted once!
+  useEffect(() => {
+    if (!didMount) {
+      return;
+    }
 
-    //return if data has been found and loaded
+    const { loaded } = itemsPage;
+
+    console.log("itemsPage.loaded", loaded);
+
+    // //return if data has been found and loaded
     if (loaded) {
       return;
     }
 
-    const { item_id, pathname } = this.props;
+    const { item_id, pathname } = props;
 
     //fetch the character trivia data from localstorage
     let prevArrayObj = localStorageService.loadClientData(pathname);
@@ -99,158 +153,116 @@ class Item extends Component {
 
     prevArrayObj.push({
       item_id: item_id,
-      homePlanet: this.state.homePlanet,
-      films: this.state.films
+      homePlanet: itemsPage.homePlanet,
+      films: itemsPage.films,
     });
 
     // save it to localstorage with a unique key
     localStorageService.saveClientData(pathname, prevArrayObj);
 
+    console.log("didUpdate logic for Item", item_id);
     console.log("adding items to the localstorage");
-  }
+  }, [itemsPage.homePlanet, itemsPage.films, itemsPage.loaded]);
 
-  async componentDidMount() {
-    const { item_id, pathname } = this.props;
-
-    const data = await localStorageService.loadClientData(pathname);
-
-    //load found trivia
-    if (data !== undefined) {
-      // console.log("Found item_id: ", data.find((item) => item.item_id === item_id));
-
-      const item_data = await data.find(item => item.item_id === item_id);
-      await this.setStateAsync({
-        homePlanet: item_data.homePlanet,
-        films: item_data.films,
-        loaded: true
-      });
-    } else {
-      //otherwise fetch character trivia
-
-      const { characterData } = this.props,
-        homePlanetURL = characterData.homeworld,
-        allFilmsURLs = characterData.films;
-
-      const result = await SWAPI.requestURL(homePlanetURL);
-
-      // console.log("homePlanetURL result", result);
-
-      const results = await Promise.all(SWAPI.requestURLs(allFilmsURLs));
-
-      // console.log("filmsURL and homePlanetURL results",result, results);
-
-      await this.setStateAsync({ homePlanet: result, films: results });
-
-      // console.log("results: this.setStateAsync({homePlanet: result, films: results})");
-    }
-  }
-
-  upVoteCharacter(e) {
+  const upVoteCharacter = (e) => {
     e.preventDefault();
 
-    this.upVote = this.props.characterData.up_vote;
-    this.upVote++;
+    upVote++;
 
-    this.calcOverallPopularity();
-  }
+    calcOverallPopularity();
+  };
 
-  downVoteCharacter(e) {
+  const downVoteCharacter = (e) => {
     e.preventDefault();
 
-    this.downVote = this.props.characterData.down_vote;
-    this.downVote++;
+    downVote++;
 
-    this.calcOverallPopularity();
-  }
+    calcOverallPopularity();
+  };
 
-  calcOverallPopularity() {
-    let overallPopularity = Math.max(this.upVote - this.downVote, 0);
-    this.props.reorderItemsByOverallPopularity(
-      this.props.item_id,
-      this.upVote,
-      this.downVote,
+  const calcOverallPopularity = () => {
+    let overallPopularity = Math.max(upVote - downVote, 0);
+    props.reorderItemsByOverallPopularity(
+      props.item_id,
+      upVote,
+      downVote,
       overallPopularity
     );
+  };
+
+  const { characterData } = props,
+    characterUpVote = characterData.up_vote,
+    characterDownVote = characterData.down_vote,
+    overallPopularity = characterData.overall_vote;
+
+  const { homePlanet, films } = itemsPage;
+  const planetEndPointURL = SWAPI.planetsURL,
+    filmEndPointURL = SWAPI.filmsURL;
+
+  let planet_id = 0,
+    filmsURL = [];
+  const hasTriviaData = homePlanet !== {} && films.length !== 0;
+
+  if (hasTriviaData) {
+    let id_suffix = stringUtil.fetchIDSuffix(homePlanet.url, planetEndPointURL);
+    planet_id = stringUtil.trimSpecialChars(id_suffix);
+
+    // Loop through the films array
+    filmsURL = films.map((film) => {
+      let id_suffix = stringUtil.fetchIDSuffix(film.url, filmEndPointURL);
+      let film_id = stringUtil.trimSpecialChars(id_suffix);
+      film.id = film_id;
+      return film;
+    });
   }
 
-  render() {
-    const { characterData } = this.props,
-      upVote = characterData.up_vote,
-      downVote = characterData.down_vote,
-      overallPopularity = characterData.overall_vote;
-
-    const { homePlanet, films } = this.state;
-    const planetEndPointURL = SWAPI.planetsURL,
-      filmEndPointURL = SWAPI.filmsURL;
-
-    let planet_id = 0,
-      filmsURL = [];
-    const hasTriviaData = homePlanet !== {} && films.length !== 0;
-
-    if (hasTriviaData) {
-      let id_suffix = stringUtil.fetchIDSuffix(
-        homePlanet.url,
-        planetEndPointURL
-      );
-      planet_id = stringUtil.trimSpecialChars(id_suffix);
-
-      // Loop through the films array
-      filmsURL = films.map(film => {
-        let id_suffix = stringUtil.fetchIDSuffix(film.url, filmEndPointURL);
-        let film_id = stringUtil.trimSpecialChars(id_suffix);
-        film.id = film_id;
-        return film;
-      });
-    }
-
-    return (
-      <div className="gridContainer--col flex-center">
-        <div className="characterBox">
-          <div className="characterBox--media flex-center">
-            <img src="" alt="" />
-            <Link
-              to={"/people/" + this.props.item_id}
-              className="characterLink"
-              key={this.props.item_i}
-            >
-              {characterData.name}
-            </Link>
-            {hasTriviaData ? (
-              <TriviaContent
-                title={"Planet of Origin"}
-                description={"Films played in"}
-                planet_id={planet_id}
-                homePlanet={homePlanet}
-                filmsURL={filmsURL}
-              />
-            ) : (
-              <LoadingIcon />
-            )}
+  return (
+    <div className="gridContainer--col flex-center">
+      <div className="characterBox">
+        <div className="characterBox--media flex-center">
+          <img src="" alt="" />
+          <Link
+            to={"/people/" + props.item_id}
+            className="characterLink"
+            key={props.item_i}
+          >
+            {characterData.name}
+          </Link>
+          {hasTriviaData ? (
+            <TriviaContent
+              title={"Planet of Origin"}
+              description={"Films played in"}
+              planet_id={planet_id}
+              homePlanet={homePlanet}
+              filmsURL={filmsURL}
+            />
+          ) : (
+            <LoadingIcon />
+          )}
+        </div>
+        <div className="voteContainer flex-center">
+          <div
+            className="voteContainer--upVote flex-center"
+            onClick={(e) => upVoteCharacter(e)}
+          >
+            <i className="em em---1"></i>
+            <span className="voteCount">{characterUpVote}</span>{" "}
           </div>
-          <div className="voteContainer flex-center">
-            <div
-              className="voteContainer--upVote flex-center"
-              onClick={this.upVoteCharacter.bind(this)}
-            >
-              <i className="em em---1"></i>
-              <span className="voteCount">{upVote}</span>{" "}
-            </div>
-            <div
-              className="voteContainer--downVote flex-center"
-              onClick={this.downVoteCharacter.bind(this)}
-            >
-              <i className="em em--1"></i>
-              <span className="voteCount">{downVote}</span>{" "}
-            </div>
-          </div>
-          <div className="overAllVoteContainer flex-center">
-            <i className="em em-heart"></i>
-            <span className="voteCount">{overallPopularity}</span>
+          <div
+            className="voteContainer--downVote flex-center"
+            onClick={(e) => downVoteCharacter(e)}
+          >
+            <i className="em em--1"></i>
+            <span className="voteCount">{characterDownVote}</span>{" "}
           </div>
         </div>
+        <div className="overAllVoteContainer flex-center">
+          <i className="em em-heart"></i>
+          <span className="voteCount">{overallPopularity}</span>
+        </div>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 export default Item;

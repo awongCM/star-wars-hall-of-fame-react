@@ -1,29 +1,23 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import Item from "./../Item/Item";
 
 import "./Grid.css";
 
-class Grid extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      data: this.props.data,
-    };
-  }
+const Grid = (props) => {
+  const { data, pathname, characterFilter } = props;
+  const [gridPage, setGridPage] = useState({ data: data });
 
-  componentWillUpdate(nextProps) {
-    if (this.props !== nextProps) {
-      this.setState({ data: nextProps.data });
-    }
-  }
+  useEffect(() => {
+    setGridPage({ data: data });
+  }, [data]);
 
-  reorderItemsByOverallPopularity(
+  const reorderItemsByOverallPopularity = (
     item_id,
     upVote,
     downVote,
     overallPopularity
-  ) {
-    let newOrderedData = this.state.data.map((item) => {
+  ) => {
+    let newOrderedData = gridPage.data.map((item) => {
       if (item.id === item_id) {
         item.up_vote = upVote;
         item.down_vote = downVote;
@@ -33,18 +27,16 @@ class Grid extends Component {
         return item;
       }
     });
-    this.setState({ data: newOrderedData });
-  }
+    setGridPage({ data: newOrderedData });
+  };
 
-  render() {
-    const { pathname, characterFilter } = this.props;
-
+  const renderGridDataLayout = () => {
     const lowerCaseCharacterFilter = characterFilter
       ? characterFilter.toLowerCase()
       : "";
 
     // TODO with data that has either name or title
-    let filteredItems = this.state.data.filter((item) => {
+    let filteredItems = (gridPage.data || []).filter((item) => {
       if (
         "name" in item &&
         item.name.toLowerCase().indexOf(lowerCaseCharacterFilter) !== -1
@@ -78,9 +70,7 @@ class Grid extends Component {
           item_id={item.id}
           pathname={pathname}
           characterData={item}
-          reorderItemsByOverallPopularity={this.reorderItemsByOverallPopularity.bind(
-            this
-          )}
+          reorderItemsByOverallPopularity={reorderItemsByOverallPopularity}
         />
       );
 
@@ -105,8 +95,12 @@ class Grid extends Component {
       );
     }
 
-    return <div className="gridContainer">{rows}</div>;
-  }
-}
+    return rows;
+  };
+
+  const gridDataLayout = renderGridDataLayout();
+
+  return <div className="gridContainer">{gridDataLayout}</div>;
+};
 
 export default Grid;

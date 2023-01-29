@@ -65,7 +65,11 @@ const Home = ({ location }) => {
   };
 
   const handleCharacterFilter = (characterFilter) => {
-    setHomePage({ characterFilter: characterFilter });
+    console.log("homePage characterFilter", characterFilter);
+    setHomePage({
+      ...homePage,
+      characterFilter,
+    });
   };
 
   const handleNextPage = (page_url) => {
@@ -79,7 +83,10 @@ const Home = ({ location }) => {
   };
 
   const handleDropdownQueryType = (queryType) => {
-    setHomePage({ queryType: queryType });
+    setHomePage({
+      ...homePage,
+      queryType,
+    });
   };
 
   const constructPaginationData = (data, pagination) => {
