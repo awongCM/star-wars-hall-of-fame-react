@@ -9,13 +9,17 @@
     "react": "^16.8.3",
     "react-dom": "^16.8.3",
     "react-router": "^3.0.5",
-    "react-scripts": "1.0.10",
-    "request": "^2.81.0"
+    "react-scripts": "5.0.0",
+    "request": "^2.81.0",
+    "@snyk/protect": "latest"
   },
   "scripts": {
     "start": "PORT=9090 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
-  }
+    "eject": "react-scripts eject",
+    "prepare": "yarn run snyk-protect",
+    "snyk-protect": "snyk-protect"
+  },
+  "snyk": true
 }
