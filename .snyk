@@ -1,0 +1,50 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.25.1
+ignore: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  'npm:debug:20170905':
+    - react-scripts > react-dev-utils > detect-port-alt > debug:
+        patched: '2024-09-14T07:54:18.913Z'
+        id: 'npm:debug:20170905'
+        path: react-scripts > react-dev-utils > detect-port-alt > debug
+  'npm:extend:20180424':
+    - react-scripts > jest > jest-cli > jest-config > jest-environment-jsdom > jsdom > request > extend:
+        patched: '2024-09-14T07:54:18.913Z'
+        id: 'npm:extend:20180424'
+        path: >-
+          react-scripts > jest > jest-cli > jest-config > jest-environment-jsdom
+          > jsdom > request > extend
+  'npm:hoek:20180212':
+    - react-scripts > jest > jest-cli > jest-config > jest-environment-jsdom > jsdom > request > hawk > hoek:
+        patched: '2024-09-14T07:54:18.913Z'
+        id: 'npm:hoek:20180212'
+        path: >-
+          react-scripts > jest > jest-cli > jest-config > jest-environment-jsdom
+          > jsdom > request > hawk > hoek
+    - react-scripts > jest > jest-cli > jest-config > jest-environment-jsdom > jsdom > request > hawk > boom > hoek:
+        patched: '2024-09-14T07:54:18.913Z'
+        id: 'npm:hoek:20180212'
+        path: >-
+          react-scripts > jest > jest-cli > jest-config > jest-environment-jsdom
+          > jsdom > request > hawk > boom > hoek
+    - react-scripts > jest > jest-cli > jest-config > jest-environment-jsdom > jsdom > request > hawk > sntp > hoek:
+        patched: '2024-09-14T07:54:18.913Z'
+        id: 'npm:hoek:20180212'
+        path: >-
+          react-scripts > jest > jest-cli > jest-config > jest-environment-jsdom
+          > jsdom > request > hawk > sntp > hoek
+  'npm:stringstream:20180511':
+    - react-scripts > jest > jest-cli > jest-config > jest-environment-jsdom > jsdom > request > stringstream:
+        patched: '2024-09-14T07:54:18.913Z'
+        id: 'npm:stringstream:20180511'
+        path: >-
+          react-scripts > jest > jest-cli > jest-config > jest-environment-jsdom
+          > jsdom > request > stringstream
+  'npm:tough-cookie:20170905':
+    - react-scripts > jest > jest-cli > jest-config > jest-environment-jsdom > jsdom > request > tough-cookie:
+        patched: '2024-09-14T07:54:18.913Z'
+        id: 'npm:tough-cookie:20170905'
+        path: >-
+          react-scripts > jest > jest-cli > jest-config > jest-environment-jsdom
+          > jsdom > request > tough-cookie
