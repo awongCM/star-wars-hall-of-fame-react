@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Form from "./../Form/Form";
 import Grid from "./../Grid/Grid";
 import Pagination from "./../Pagination/Pagination";
@@ -12,37 +12,15 @@ const Home = ({ location }) => {
     queryType: "people",
   });
 
-  useEffect(() => {
-    const { queryType } = homePage;
-    let url = queryType ? SWAPI.fetchURLBy(queryType) : SWAPI.defaultURL;
-
-    fetchData(url);
-  }, []);
-
-  const fetchData = (url = SWAPI.defaultURL) => {
-    fetch(url, SWAPI.initHeaders())
-      .then((response) => {
-        return response.json();
-      })
-      .then((myJSON) => {
-        return refineData(myJSON);
-      })
-      .then((refinedData) => {
-        setHomePage({
-          data: refinedData.newList,
-          pagination: refinedData.pagination,
-        });
-      });
-  };
-
-  const refineData = (rawJSONData) => {
+  const refineData = useCallback((rawJSONData) => {
     // assuming this are the correct SWAPI raw data
     const { count, next, previous, results } = rawJSONData;
     const { queryType } = homePage;
 
-    // TODO - will probably scrape for the SWAPI resources and generate the unique ids for navigating individual resources as a workaround
+    // Extract ID from SWAPI URL (e.g., "https://swapi.dev/api/people/1/" -> "1")
     const newList = results.map((item, i) => {
-      item.id = i;
+      const urlMatch = item.url.match(/\/(\d+)\/?$/);
+      item.id = urlMatch ? parseInt(urlMatch[1], 10) - 1 : i; // SWAPI IDs are 1-based, convert to 0-based
       item.up_vote = 0;
       item.down_vote = 0;
       item.overall_vote = 0;
@@ -62,7 +40,33 @@ const Home = ({ location }) => {
       newList: newList,
       pagination: pagination,
     };
-  };
+  }, [homePage.queryType]);
+
+  const fetchData = useCallback((url = SWAPI.defaultURL) => {
+    fetch(url, SWAPI.initHeaders())
+      .then((response) => {
+        return response.json();
+      })
+      .then((myJSON) => {
+        return refineData(myJSON);
+      })
+      .then((refinedData) => {
+        setHomePage((prevState) => ({
+          ...prevState,
+          data: refinedData.newList,
+          pagination: refinedData.pagination,
+        }));
+      });
+  }, [refineData]);
+
+  useEffect(() => {
+    const { queryType } = homePage;
+    let url = queryType ? SWAPI.fetchURLBy(queryType) : SWAPI.defaultURL;
+
+    fetchData(url);
+  }, [fetchData, homePage.queryType]);
+
+
 
   const handleCharacterFilter = (characterFilter) => {
     console.log("homePage characterFilter", characterFilter);

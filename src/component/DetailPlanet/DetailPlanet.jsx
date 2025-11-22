@@ -1,5 +1,5 @@
 // TODO - to DRY up our detail component for other pages
-import React, { Component, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { Link } from "react-router";
 
 import "./DetailPlanet.css";
@@ -14,21 +14,22 @@ const DetailPlanet = (props) => {
 
   const commentInput = useRef(null);
 
-  const loadPersistedClientData = () => {
+  const loadPersistedClientData = useCallback(() => {
     //our key value to fetch and store locals
     const { pathname } = props.location;
 
     console.log("loadClientData", localStorageService.loadClientData(pathname));
     return localStorageService.loadClientData(pathname);
-  };
+  }, [props.location]);
 
-  const refineData = (parsedData) => {
+  const refineData = useCallback((parsedData) => {
     parsedData.comments = [];
     return parsedData;
-  };
-  const fetchData = () => {
+  }, []);
+
+  const fetchData = useCallback(() => {
     //there's not zero-based index search for character api
-    let param_index = parseInt(props.params.id) + 1;
+    let param_index = parseInt(props.params.id, 10) + 1;
 
     //For some reason - you have to explicitly pass query params instead of using headers
     fetch(`https://swapi.dev/api/planets/${param_index}?format=json`)
@@ -39,14 +40,14 @@ const DetailPlanet = (props) => {
         return refineData(myJSON);
       })
       .then((refinedCharData) => {
-        setDetailPlanetPage({
-          ...detailPlanetPage,
+        setDetailPlanetPage((prevState) => ({
+          ...prevState,
           homePlanetData: refinedCharData,
-        });
+        }));
 
         console.log(refinedCharData);
       });
-  };
+  }, [props.params.id, refineData]);
 
   useEffect(() => {
     const availableClientData = loadPersistedClientData();
@@ -60,7 +61,7 @@ const DetailPlanet = (props) => {
       // we have nothing to begin with
       fetchData();
     }
-  }, []);
+  }, [loadPersistedClientData, fetchData]);
 
   const saveComment = (e) => {
     let comment = commentInput.current.value;
@@ -83,11 +84,7 @@ const DetailPlanet = (props) => {
     });
   };
 
-  useEffect(() => {
-    persistsClientData();
-  }, [detailPlanetPage.homePlanetComments]);
-
-  const persistsClientData = () => {
+  const persistsClientData = useCallback(() => {
     const { pathname } = props.location;
 
     const mergedData = Object.assign(
@@ -97,7 +94,11 @@ const DetailPlanet = (props) => {
     );
 
     localStorageService.saveClientData(pathname, mergedData);
-  };
+  }, [props.location, detailPlanetPage.homePlanetData, detailPlanetPage.homePlanetComments]);
+
+  useEffect(() => {
+    persistsClientData();
+  }, [persistsClientData]);
 
   const { homePlanetData, homePlanetComments } = detailPlanetPage;
 
