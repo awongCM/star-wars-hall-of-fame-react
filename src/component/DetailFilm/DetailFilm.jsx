@@ -1,5 +1,5 @@
 // TODO - to DRY up our detail component for other pages
-import React, { Component, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { Link } from "react-router";
 
 import "./DetailFilm.css";
@@ -13,21 +13,22 @@ const DetailFilm = (props) => {
 
   const commentInput = useRef(null);
 
-  const loadPersistedClientData = () => {
+  const loadPersistedClientData = useCallback(() => {
     //our key value to fetch and store locals
     const { pathname } = props.location;
 
     console.log("loadClientData", localStorageService.loadClientData(pathname));
     return localStorageService.loadClientData(pathname);
-  };
+  }, [props.location]);
 
-  const refineData = (parsedData) => {
+  const refineData = useCallback((parsedData) => {
     parsedData.comments = [];
     return parsedData;
-  };
-  const fetchData = () => {
+  }, []);
+
+  const fetchData = useCallback(() => {
     //there's not zero-based index search for character api
-    let param_index = parseInt(props.params.id) + 1;
+    let param_index = parseInt(props.params.id, 10) + 1;
 
     //For some reason - you have to explicitly pass query params instead of using headers
     fetch(`https://swapi.dev/api/films/${param_index}?format=json`)
@@ -38,11 +39,11 @@ const DetailFilm = (props) => {
         return refineData(myJSON);
       })
       .then((refinedCharData) => {
-        setDetailFilmPage({ ...detailFilmPage, filmData: refinedCharData });
+        setDetailFilmPage((prevState) => ({ ...prevState, filmData: refinedCharData }));
 
         console.log(refinedCharData);
       });
-  };
+  }, [props.params.id, refineData]);
 
   useEffect(() => {
     const availableClientData = loadPersistedClientData();
@@ -56,7 +57,7 @@ const DetailFilm = (props) => {
       // we have nothing to begin with
       fetchData();
     }
-  }, []);
+  }, [loadPersistedClientData, fetchData]);
 
   const saveComment = (e) => {
     let comment = commentInput.current.value;
@@ -76,11 +77,7 @@ const DetailFilm = (props) => {
     setDetailFilmPage({ ...detailFilmPage, filmComments: newFilmComments });
   };
 
-  useEffect(() => {
-    persistsClientData();
-  }, [detailFilmPage.filmComments]);
-
-  const persistsClientData = () => {
+  const persistsClientData = useCallback(() => {
     const { pathname } = props.location;
 
     const mergedData = Object.assign(
@@ -90,7 +87,11 @@ const DetailFilm = (props) => {
     );
 
     localStorageService.saveClientData(pathname, mergedData);
-  };
+  }, [props.location, detailFilmPage.filmData, detailFilmPage.filmComments]);
+
+  useEffect(() => {
+    persistsClientData();
+  }, [persistsClientData]);
 
   const { filmData, filmComments } = detailFilmPage;
 

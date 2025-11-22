@@ -72,9 +72,9 @@ const Item = (props) => {
   // have to check on the community what they say later on this useeffect design..
   const [didMount, setDidMount] = useState(false);
 
-  //Not sure if this is good practice
-  let upVote = 0 || props.characterData.up_vote;
-  let downVote = 0 || props.characterData.down_vote;
+  // Vote state properly managed with useState to trigger re-renders
+  const [upVote, setUpVote] = useState(props.characterData.up_vote || 0);
+  const [downVote, setDownVote] = useState(props.characterData.down_vote || 0);
 
   // for componentDidMount logic
   useEffect(() => {
@@ -86,44 +86,46 @@ const Item = (props) => {
       console.log("data", data);
 
       //load found trivia
-      if (data !== undefined) {
-        console.log(
-          "Found item_id: ",
-          data.find((item) => item.item_id === item_id)
-        );
-
-        const item_data = await data.find((item) => item.item_id === item_id);
-        console.log("about to set loaded to true...");
-        setItemsPage({
-          homePlanet: item_data.homePlanet,
-          films: item_data.films,
-          loaded: true,
-        });
-      } else {
-        //otherwise fetch character trivia
-
-        const { characterData } = props,
-          homePlanetURL = characterData.homeworld,
-          allFilmsURLs = characterData.films;
-
-        const result = await SWAPI.requestURL(homePlanetURL);
-
-        console.log("homePlanetURL result", result);
-
-        const results = await Promise.all(SWAPI.requestURLs(allFilmsURLs));
-
-        console.log("filmsURL and homePlanetURL results", result, results);
-
-        setItemsPage({ homePlanet: result, films: results });
-
-        // console.log("results: this.setStateAsync({homePlanet: result, films: results})");
+      if (data !== undefined && Array.isArray(data)) {
+        const item_data = data.find((item) => item.item_id === item_id);
+        
+        if (item_data) {
+          console.log("Found item_id: ", item_data);
+          console.log("about to set loaded to true...");
+          setItemsPage({
+            homePlanet: item_data.homePlanet,
+            films: item_data.films,
+            loaded: true,
+          });
+          setDidMount(true);
+          console.log("didMount logic");
+          return; // Exit early if data found
+        }
       }
+      
+      //otherwise fetch character trivia
+      const { characterData } = props,
+        homePlanetURL = characterData.homeworld,
+        allFilmsURLs = characterData.films;
+
+      const result = await SWAPI.requestURL(homePlanetURL);
+
+      console.log("homePlanetURL result", result);
+
+      const results = await Promise.all(SWAPI.requestURLs(allFilmsURLs));
+
+      console.log("filmsURL and homePlanetURL results", result, results);
+
+      setItemsPage({ homePlanet: result, films: results });
+
+      // console.log("results: this.setStateAsync({homePlanet: result, films: results})");
       setDidMount(true);
       console.log("didMount logic");
     };
 
     fetchHomePlanetAllFilms();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.item_id, props.pathname]);
 
   // for componentDidUpdate
   // this code has a bug with paginating character data after item page is already mounted once!
@@ -162,30 +164,32 @@ const Item = (props) => {
 
     console.log("didUpdate logic for Item", item_id);
     console.log("adding items to the localstorage");
-  }, [itemsPage.homePlanet, itemsPage.films, itemsPage.loaded]);
+  }, [itemsPage.homePlanet, itemsPage.films, itemsPage.loaded, didMount, props.item_id, props.pathname]);
 
   const upVoteCharacter = (e) => {
     e.preventDefault();
 
-    upVote++;
+    const newUpVote = upVote + 1;
+    setUpVote(newUpVote);
 
-    calcOverallPopularity();
+    calcOverallPopularity(newUpVote, downVote);
   };
 
   const downVoteCharacter = (e) => {
     e.preventDefault();
 
-    downVote++;
+    const newDownVote = downVote + 1;
+    setDownVote(newDownVote);
 
-    calcOverallPopularity();
+    calcOverallPopularity(upVote, newDownVote);
   };
 
-  const calcOverallPopularity = () => {
-    let overallPopularity = Math.max(upVote - downVote, 0);
+  const calcOverallPopularity = (currentUpVote, currentDownVote) => {
+    let overallPopularity = Math.max(currentUpVote - currentDownVote, 0);
     props.reorderItemsByOverallPopularity(
       props.item_id,
-      upVote,
-      downVote,
+      currentUpVote,
+      currentDownVote,
       overallPopularity
     );
   };
@@ -201,7 +205,7 @@ const Item = (props) => {
 
   let planet_id = 0,
     filmsURL = [];
-  const hasTriviaData = homePlanet !== {} && films.length !== 0;
+  const hasTriviaData = Object.keys(homePlanet).length > 0 && films.length > 0;
 
   if (hasTriviaData) {
     let id_suffix = stringUtil.fetchIDSuffix(homePlanet.url, planetEndPointURL);
@@ -245,14 +249,14 @@ const Item = (props) => {
             className="voteContainer--upVote flex-center"
             onClick={(e) => upVoteCharacter(e)}
           >
-            <i className="em em---1"></i>
+            <i className="em em-thumbsup"></i>
             <span className="voteCount">{characterUpVote}</span>{" "}
           </div>
           <div
             className="voteContainer--downVote flex-center"
             onClick={(e) => downVoteCharacter(e)}
           >
-            <i className="em em--1"></i>
+            <i className="em em-thumbsdown"></i>
             <span className="voteCount">{characterDownVote}</span>{" "}
           </div>
         </div>
