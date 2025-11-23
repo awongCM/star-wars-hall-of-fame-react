@@ -134,6 +134,7 @@ const Home = ({ location }) => {
       <Grid pathname={pathname} data={data} characterFilter={characterFilter} />
       <Pagination
         paginationData={paginationData}
+        resourceType={homePage.queryType}
         onHandleNextPage={handleNextPage}
         onHandlePreviousPage={handlePreviousPage}
       />

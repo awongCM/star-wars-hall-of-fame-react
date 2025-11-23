@@ -1,144 +1,36 @@
-// TODO - to DRY up our detail component for other pages
-import React, { useEffect, useRef, useState, useCallback } from "react";
-import { Link } from "react-router";
-
+import React from "react";
+import useDetailPage from "../../hooks/useDetailPage";
+import DetailView from "../DetailView/DetailView";
 import "./DetailFilm.css";
-import * as localStorageService from "../../services/localStorage";
 
 const DetailFilm = (props) => {
-  const [detailFilmPage, setDetailFilmPage] = useState({
-    filmData: {},
-    filmComments: [],
+  const { data, comments, saveComment } = useDetailPage({
+    resourceType: "films",
+    id: props.params.id,
+    pathname: props.location.pathname,
+    dataKey: "filmData",
+    commentsKey: "filmComments",
   });
 
-  const commentInput = useRef(null);
-
-  const loadPersistedClientData = useCallback(() => {
-    //our key value to fetch and store locals
-    const { pathname } = props.location;
-
-    console.log("loadClientData", localStorageService.loadClientData(pathname));
-    return localStorageService.loadClientData(pathname);
-  }, [props.location]);
-
-  const refineData = useCallback((parsedData) => {
-    parsedData.comments = [];
-    return parsedData;
-  }, []);
-
-  const fetchData = useCallback(() => {
-    //there's not zero-based index search for character api
-    let param_index = parseInt(props.params.id, 10) + 1;
-
-    //For some reason - you have to explicitly pass query params instead of using headers
-    fetch(`https://swapi.dev/api/films/${param_index}?format=json`)
-      .then((response) => {
-        return response.json();
-      })
-      .then((myJSON) => {
-        return refineData(myJSON);
-      })
-      .then((refinedCharData) => {
-        setDetailFilmPage((prevState) => ({ ...prevState, filmData: refinedCharData }));
-
-        console.log(refinedCharData);
-      });
-  }, [props.params.id, refineData]);
-
-  useEffect(() => {
-    const availableClientData = loadPersistedClientData();
-
-    if (availableClientData !== undefined) {
-      setDetailFilmPage({
-        filmData: availableClientData.filmData,
-        filmComments: availableClientData.filmComments,
-      });
-    } else {
-      // we have nothing to begin with
-      fetchData();
-    }
-  }, [loadPersistedClientData, fetchData]);
-
-  const saveComment = (e) => {
-    let comment = commentInput.current.value;
-
-    //we don't want any empty comments to save
-    if (comment === "") {
-      return;
-    }
-
-    const { filmComments } = detailFilmPage;
-
-    commentInput.current.value = "";
-
-    const newFilmComments = [...filmComments];
-    newFilmComments.push(comment);
-
-    setDetailFilmPage({ ...detailFilmPage, filmComments: newFilmComments });
-  };
-
-  const persistsClientData = useCallback(() => {
-    const { pathname } = props.location;
-
-    const mergedData = Object.assign(
-      {},
-      { filmData: detailFilmPage.filmData },
-      { filmComments: detailFilmPage.filmComments }
-    );
-
-    localStorageService.saveClientData(pathname, mergedData);
-  }, [props.location, detailFilmPage.filmData, detailFilmPage.filmComments]);
-
-  useEffect(() => {
-    persistsClientData();
-  }, [persistsClientData]);
-
-  const { filmData, filmComments } = detailFilmPage;
-
-  const comments = (filmComments || []).map((item, i) => {
-    return (
-      <div key={i} className="comment">
-        {item}
-      </div>
-    );
-  });
-
-  const heading = comments.length ? <h4 className="heading">Comments</h4> : "";
+  const renderFilmDetails = (filmData) => (
+    <React.Fragment>
+      <h1 className="title">{filmData.title || ""}</h1>
+      <p>Director: {filmData.director || ""}</p>
+      <p>Producer: {filmData.producer || ""}</p>
+      <p>Episode Number: {filmData.episode_id || ""}</p>
+      <p>Opening Crawl: {filmData.opening_crawl || ""}</p>
+      <p>Release Date: {filmData.release_date || ""}</p>
+    </React.Fragment>
+  );
 
   return (
-    <div>
-      <Link to={"/"} className="returnHomePage">
-        <i className="em em-back"></i>
-      </Link>
-
-      <div className="detailContainer">
-        <div className="detailContainer--media flex-center">
-          <img src="" alt="" />
-        </div>
-        <div className="detailContainer--description">
-          <h1 className="title">{filmData.title}</h1>
-          <p>Director: {filmData.director}</p>
-          <p>Producer: {filmData.producer}</p>
-          <p>Episode Number: {filmData.episode_id}</p>
-          <p>Opening Crawl: {filmData.opening_crawl}</p>
-          <p>Release Date: {filmData.release_date}</p>
-        </div>
-
-        <div className="commentInputContainer">
-          <textarea
-            ref="commentInput"
-            placeholder="Enter your comments for this film! :)"
-            cols="30"
-            rows="5"
-          ></textarea>
-          <button onClick={() => saveComment()}>Save</button>
-        </div>
-        <div className="commentSection">
-          {heading}
-          {comments}
-        </div>
-      </div>
-    </div>
+    <DetailView
+      data={data}
+      comments={comments}
+      onSaveComment={saveComment}
+      renderDetails={renderFilmDetails}
+      placeholderText="Enter your comments for this film! :)"
+    />
   );
 };
 
