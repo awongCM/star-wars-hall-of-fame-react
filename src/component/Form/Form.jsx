@@ -10,29 +10,44 @@ const Form = ({ onHandleCharacterFilter, onHandleDropdownQueryType }) => {
     onHandleDropdownQueryType(e.target.value);
   };
 
+  /**
+   * TEACHING NOTE - Controlled Components:
+   * 
+   * The dropdown is now a "controlled component":
+   * - Its value is tied to React state (in Home component)
+   * - onChange events update that state
+   * - State changes trigger re-renders and new data fetches
+   * 
+   * This is React's declarative approach vs imperative DOM manipulation.
+   */
+
   return (
     <div className="formContainer">
       <form action="" id="form" className="formContainer--formControl">
-        <label htmlFor="inputControl" className="formContainer--searchLabel">
-          Filter By:
+        <label htmlFor="selectControl" className="formContainer--searchLabel">
+          Resource Type:
         </label>
-        {/* TODO - hide for now until the other url routes are getting to work */}
-        {/* <select
-        className="formContainer--selectControl"
-        onChange={this.handleDropdownQueryType.bind(this)}
-      >
-        <option value="people" selected>
-          Character
-        </option>
-        <option value="planets">Planet</option>
-        <option value="films">Movie</option>
-        <option value="starships">Starship</option>
-      </select> */}
+        <select
+          id="selectControl"
+          className="formContainer--selectControl"
+          onChange={handleDropdownQueryType}
+          defaultValue="people"
+        >
+          <option value="people">Characters</option>
+          <option value="planets">Planets</option>
+          <option value="films">Films</option>
+          <option value="starships">Starships</option>
+        </select>
+        
+        <label htmlFor="inputControl" className="formContainer--searchLabel">
+          Filter By Name:
+        </label>
         <input
           type="text"
           id="inputControl"
           className="formContainer--textControl"
           onChange={handleCharacterFilter}
+          placeholder="Search..."
         />
       </form>
     </div>

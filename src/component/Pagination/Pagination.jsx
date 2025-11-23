@@ -44,6 +44,17 @@ const Pagination = (props) => {
     currentPage: 0,
   });
 
+  // Get display label based on resource type
+  const getResourceLabel = (resourceType) => {
+    const labels = {
+      people: "Characters",
+      planets: "Planets",
+      films: "Films",
+      starships: "Starships",
+    };
+    return labels[resourceType] || "Items";
+  };
+
   useEffect(() => {
     const { paginationData } = props;
     if (!paginationData) return;
@@ -116,7 +127,7 @@ const Pagination = (props) => {
         </nav>
         <strong className="pagination-counter">
           {" "}
-          Total Characters: {total_count}. Currently only {max_per_page} items
+          Total {getResourceLabel(props.resourceType)}: {total_count}. Currently only {max_per_page} items
           are displayed.
         </strong>
       </div>
