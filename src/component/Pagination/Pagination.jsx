@@ -1,22 +1,24 @@
-import React, { Component, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import "./Pagination.css";
 
 const getCurrentPageNo = (next_str, previous_str) => {
-  const page_no_substr = /\?page\=\d/g;
+  const page_no_substr = /\?page=(\d+)/;
   let nextPageNo = null,
     prevPageNo = null;
 
   if (next_str !== null) {
-    nextPageNo = parseInt(
-      next_str.match(page_no_substr).join("").split("=").pop()
-    );
+    const match = next_str.match(page_no_substr);
+    if (match) {
+      nextPageNo = parseInt(match[1], 10);
+    }
   }
 
   if (previous_str !== null) {
-    prevPageNo = parseInt(
-      previous_str.match(page_no_substr).join("").split("=").pop()
-    );
+    const match = previous_str.match(page_no_substr);
+    if (match) {
+      prevPageNo = parseInt(match[1], 10);
+    }
   }
 
   console.log("nextPageNo", nextPageNo);
@@ -42,24 +44,44 @@ const Pagination = (props) => {
     currentPage: 0,
   });
 
+  // Get display label based on resource type
+  const getResourceLabel = (resourceType) => {
+    const labels = {
+      people: "Characters",
+      planets: "Planets",
+      films: "Films",
+      starships: "Starships",
+    };
+    return labels[resourceType] || "Items";
+  };
+
   useEffect(() => {
+    const { paginationData } = props;
+    if (!paginationData) return;
+
     const currentPage = getCurrentPageNo(
-      props.paginationData.next,
-      props.paginationData.previous
+      paginationData.next,
+      paginationData.previous
     );
 
-    setPaginationPage((paginationPage) => ({
-      ...paginationPage,
-      total_pages: props.paginationData.total_pages,
-      next: props.paginationData.next,
-      previous: props.paginationData.previous,
-      total_count: props.paginationData.total_count,
-      max_per_page: props.paginationData.max_per_page,
-      allowPrevious: props.paginationData.previous !== null,
-      allowNext: props.paginationData.next !== null,
+    setPaginationPage((prevState) => ({
+      ...prevState,
+      total_pages: paginationData.total_pages,
+      next: paginationData.next,
+      previous: paginationData.previous,
+      total_count: paginationData.total_count,
+      max_per_page: paginationData.max_per_page,
+      allowPrevious: paginationData.previous !== null,
+      allowNext: paginationData.next !== null,
       currentPage: currentPage,
     }));
-  }, [props && props.paginationData]);
+  }, [
+    props.paginationData && props.paginationData.next,
+    props.paginationData && props.paginationData.previous,
+    props.paginationData && props.paginationData.total_pages,
+    props.paginationData && props.paginationData.total_count,
+    props.paginationData && props.paginationData.max_per_page,
+  ]);
 
   const handlePreviousNextReq = (previous, next) => {
     if (previous !== null) {
@@ -105,7 +127,7 @@ const Pagination = (props) => {
         </nav>
         <strong className="pagination-counter">
           {" "}
-          Total Characters: {total_count}. Currently only {max_per_page} items
+          Total {getResourceLabel(props.resourceType)}: {total_count}. Currently only {max_per_page} items
           are displayed.
         </strong>
       </div>

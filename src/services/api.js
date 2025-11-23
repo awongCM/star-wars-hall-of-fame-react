@@ -1,6 +1,7 @@
 //API Request Settings
 
-export const defaultURL = `https://swapi.dev/api/people/`,
+export const peopleURL = "https://swapi.dev/api/people/",
+  defaultURL = peopleURL,
   planetsURL = "https://swapi.dev/api/planets/",
   filmsURL = "https://swapi.dev/api/films/",
   starshipsURL = "https://swapi.dev/api/starships/";
@@ -22,7 +23,9 @@ export function requestURL(requested_URL) {
 }
 
 export function requestURLs(requested_URLs) {
-  return requested_URLs.map((requested_URL) => requestURL(requested_URL));
+  return Promise.all(
+    requested_URLs.map((requested_URL) => requestURL(requested_URL))
+  );
 }
 
 async function _requestURL(requested_URL) {

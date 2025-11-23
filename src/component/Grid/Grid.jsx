@@ -35,19 +35,17 @@ const Grid = (props) => {
       ? characterFilter.toLowerCase()
       : "";
 
-    // TODO with data that has either name or title
+    /**
+     * TEACHING NOTE - Array.filter() Proper Usage:
+     * 
+     * filter() expects a boolean return value for each item.
+     * We now explicitly return true/false instead of item/undefined.
+     * 
+     * Also, we use includes() which is more modern than indexOf() !== -1
+     */
     let filteredItems = (gridPage.data || []).filter((item) => {
-      if (
-        "name" in item &&
-        item.name.toLowerCase().indexOf(lowerCaseCharacterFilter) !== -1
-      ) {
-        return item;
-      } else if (
-        "title" in item &&
-        item.title.toLowerCase().indexOf(lowerCaseCharacterFilter) !== -1
-      ) {
-        return item;
-      }
+      const itemName = (item.name || item.title || "").toLowerCase();
+      return itemName.includes(lowerCaseCharacterFilter);
     });
 
     //sort array in descending order
@@ -63,13 +61,25 @@ const Grid = (props) => {
       remainder_diff = item_per_row - 1;
 
     filteredItems.forEach((item, i) => {
+      /**
+       * TEACHING NOTE - Passing Resource Type:
+       * 
+       * Each item now has a data_type property (set in Home.jsx)
+       * that tells us what kind of resource it is.
+       * 
+       * We pass this to Item so it knows how to:
+       * 1. Fetch the right trivia
+       * 2. Display the right properties
+       * 3. Link to the right detail page
+       */
       //Item Component
       cols.push(
         <Item
           key={i}
           item_id={item.id}
           pathname={pathname}
-          characterData={item}
+          itemData={item}
+          resourceType={item.data_type || "people"}
           reorderItemsByOverallPopularity={reorderItemsByOverallPopularity}
         />
       );

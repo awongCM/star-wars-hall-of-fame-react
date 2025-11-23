@@ -1,14 +1,26 @@
-import React, { Component, useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link } from "react-router";
-
+import useTrivia from "../../hooks/useTrivia";
+import TriviaDisplay from "../TriviaDisplay/TriviaDisplay";
 import "./../Grid/Grid.css";
 import "./Item.css";
 
-import * as SWAPI from "./../../services/api";
-import * as localStorageService from "../../services/localStorage";
-import * as stringUtil from "../../util/stringUtil";
-
-//TODOs - to persist character trivia content data in localstorage in various scenarios when user interacts with this UI screen
+/**
+ * TEACHING NOTE - Component Refactoring:
+ * 
+ * This component was refactored from a people-specific component to a
+ * resource-agnostic component that works with any SWAPI resource type.
+ * 
+ * Key Changes:
+ * 1. Removed hardcoded "people" logic
+ * 2. Extracted trivia fetching to custom hook (useTrivia)
+ * 3. Created flexible TriviaDisplay component for rendering
+ * 4. Added resourceType prop to determine behavior
+ * 
+ * This is an example of the Open/Closed Principle:
+ * - Open for extension (new resource types)
+ * - Closed for modification (don't need to change existing code)
+ */
 
 const LoadingIcon = () => (
   <div className="loadingState">
@@ -17,204 +29,123 @@ const LoadingIcon = () => (
   </div>
 );
 
-//TODOS - to complete the dynamic creation of trivia content
-const TriviaContent = ({
-  title,
-  description,
-  planet_id,
-  homePlanet,
-  filmsURL,
-}) => (
-  <div className="triviaContent">
-    <div className="planetLink">
-      <span>{title}</span>
-      <br />
-      <Link to={"/planet/" + planet_id} key={planet_id}>
-        {homePlanet.name}
-      </Link>
-    </div>
-    <div className="filmsList">
-      <span>{description}</span>
-      <br />
-      <ul>
-        {filmsURL.map((filmURL, index) => {
-          return (
-            <li key={index}>
-              <Link to={"/film/" + filmURL.id} key={filmURL.id}>
-                {filmURL.title}
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
-    </div>
-  </div>
-);
-
-// HOOKS
+/**
+ * TEACHING NOTE - Component Props:
+ * 
+ * This component now accepts:
+ * - item_id: The item's ID
+ * - pathname: For localStorage caching
+ * - itemData: The actual data (person, planet, film, starship)
+ * - resourceType: What kind of resource (people, planets, films, starships)
+ * - reorderItemsByOverallPopularity: Callback for voting
+ * 
+ * By accepting resourceType, one component handles all types!
+ */
 const Item = (props) => {
-  const [itemsPage, setItemsPage] = useState({
-    homePlanet: {},
-    films: [],
-    loaded: false,
-    // todos for other dropdown types
-    /*
-    **PLANETS**
-    residents, films
-    **FILMS**
-    characters, planets, starships
-    **STARSHIPS**
-    pilots, films
-    */
+  const { item_id, pathname, itemData, resourceType, reorderItemsByOverallPopularity } = props;
+
+  /**
+   * TEACHING NOTE - Custom Hook Usage:
+   * 
+   * Instead of managing trivia fetching logic here, we delegate it to useTrivia hook.
+   * This is the "separation of concerns" principle:
+   * - useTrivia: Handles data fetching and caching
+   * - Item: Handles display and user interaction
+   * 
+   * Benefits:
+   * - Cleaner component code
+   * - Reusable logic
+   * - Easier testing
+   */
+  const { triviaData, loaded } = useTrivia({
+    itemId: item_id,
+    pathname,
+    itemData,
+    resourceType,
   });
 
-  // NB: this is actually not the latest best practiced to combine didMount and didUpdate conditional check logic here
-  // have to check on the community what they say later on this useeffect design..
-  const [didMount, setDidMount] = useState(false);
-
-  //Not sure if this is good practice
-  let upVote = 0 || props.characterData.up_vote;
-  let downVote = 0 || props.characterData.down_vote;
-
-  // for componentDidMount logic
-  useEffect(() => {
-    const { item_id, pathname } = props;
-    console.log("item_id to find", item_id);
-
-    const fetchHomePlanetAllFilms = async () => {
-      const data = await localStorageService.loadClientData(pathname);
-      console.log("data", data);
-
-      //load found trivia
-      if (data !== undefined) {
-        console.log(
-          "Found item_id: ",
-          data.find((item) => item.item_id === item_id)
-        );
-
-        const item_data = await data.find((item) => item.item_id === item_id);
-        console.log("about to set loaded to true...");
-        setItemsPage({
-          homePlanet: item_data.homePlanet,
-          films: item_data.films,
-          loaded: true,
-        });
-      } else {
-        //otherwise fetch character trivia
-
-        const { characterData } = props,
-          homePlanetURL = characterData.homeworld,
-          allFilmsURLs = characterData.films;
-
-        const result = await SWAPI.requestURL(homePlanetURL);
-
-        console.log("homePlanetURL result", result);
-
-        const results = await Promise.all(SWAPI.requestURLs(allFilmsURLs));
-
-        console.log("filmsURL and homePlanetURL results", result, results);
-
-        setItemsPage({ homePlanet: result, films: results });
-
-        // console.log("results: this.setStateAsync({homePlanet: result, films: results})");
-      }
-      setDidMount(true);
-      console.log("didMount logic");
-    };
-
-    fetchHomePlanetAllFilms();
-  }, []);
-
-  // for componentDidUpdate
-  // this code has a bug with paginating character data after item page is already mounted once!
-  useEffect(() => {
-    if (!didMount) {
-      return;
-    }
-
-    const { loaded } = itemsPage;
-
-    console.log("itemsPage.loaded", loaded);
-
-    // //return if data has been found and loaded
-    if (loaded) {
-      return;
-    }
-
-    const { item_id, pathname } = props;
-
-    //fetch the character trivia data from localstorage
-    let prevArrayObj = localStorageService.loadClientData(pathname);
-
-    //set to empty array if there's not stored data ib localstorage
-    if (prevArrayObj === undefined) {
-      prevArrayObj = [];
-    }
-
-    prevArrayObj.push({
-      item_id: item_id,
-      homePlanet: itemsPage.homePlanet,
-      films: itemsPage.films,
-    });
-
-    // save it to localstorage with a unique key
-    localStorageService.saveClientData(pathname, prevArrayObj);
-
-    console.log("didUpdate logic for Item", item_id);
-    console.log("adding items to the localstorage");
-  }, [itemsPage.homePlanet, itemsPage.films, itemsPage.loaded]);
+  /**
+   * TEACHING NOTE - State Management:
+   * 
+   * We keep voting state here because it's specific to the Item component.
+   * Vote counts are UI-only state (not persisted to backend/localStorage).
+   */
+  const [upVote, setUpVote] = useState(itemData.up_vote || 0);
+  const [downVote, setDownVote] = useState(itemData.down_vote || 0);
 
   const upVoteCharacter = (e) => {
     e.preventDefault();
 
-    upVote++;
+    const newUpVote = upVote + 1;
+    setUpVote(newUpVote);
 
-    calcOverallPopularity();
+    calcOverallPopularity(newUpVote, downVote);
   };
 
   const downVoteCharacter = (e) => {
     e.preventDefault();
 
-    downVote++;
+    const newDownVote = downVote + 1;
+    setDownVote(newDownVote);
 
-    calcOverallPopularity();
+    calcOverallPopularity(upVote, newDownVote);
   };
 
-  const calcOverallPopularity = () => {
-    let overallPopularity = Math.max(upVote - downVote, 0);
-    props.reorderItemsByOverallPopularity(
-      props.item_id,
-      upVote,
-      downVote,
+  const calcOverallPopularity = (currentUpVote, currentDownVote) => {
+    let overallPopularity = Math.max(currentUpVote - currentDownVote, 0);
+    reorderItemsByOverallPopularity(
+      item_id,
+      currentUpVote,
+      currentDownVote,
       overallPopularity
     );
   };
 
-  const { characterData } = props,
-    characterUpVote = characterData.up_vote,
-    characterDownVote = characterData.down_vote,
-    overallPopularity = characterData.overall_vote;
+  /**
+   * TEACHING NOTE - Dynamic Routing:
+   * 
+   * We build the detail page link dynamically based on resourceType.
+   * For example:
+   * - people -> /people/1
+   * - planets -> /planet/1
+   * - films -> /film/1
+   * - starships -> /starship/1
+   * 
+   * Note: planet/film/starship are singular (legacy routing convention)
+   */
+  const getItemLink = () => {
+    const routeMap = {
+      people: `/people/${item_id}`,
+      planets: `/planet/${item_id}`,
+      films: `/film/${item_id}`,
+      starships: `/starship/${item_id}`,
+    };
+    return routeMap[resourceType] || `/people/${item_id}`;
+  };
 
-  const { homePlanet, films } = itemsPage;
-  const planetEndPointURL = SWAPI.planetsURL,
-    filmEndPointURL = SWAPI.filmsURL;
+  /**
+   * TEACHING NOTE - Dynamic Display Name:
+   * 
+   * Different resources have different property names:
+   * - People/Planets/Starships: "name"
+   * - Films: "title"
+   * 
+   * We use the "in" operator to check which property exists.
+   */
+  const displayName = itemData.name || itemData.title || "Unknown";
+  const itemVotes = itemData.up_vote || 0;
+  const itemDownVotes = itemData.down_vote || 0;
+  const overallPopularity = itemData.overall_vote || 0;
 
-  let planet_id = 0,
-    filmsURL = [];
-  const hasTriviaData = homePlanet !== {} && films.length !== 0;
-
-  if (hasTriviaData) {
-    let id_suffix = stringUtil.fetchIDSuffix(homePlanet.url, planetEndPointURL);
-    planet_id = stringUtil.trimSpecialChars(id_suffix);
-
-    // Loop through the films array
-    filmsURL = films.map((film) => {
-      let id_suffix = stringUtil.fetchIDSuffix(film.url, filmEndPointURL);
-      let film_id = stringUtil.trimSpecialChars(id_suffix);
-      film.id = film_id;
-      return film;
-    });
-  }
+  /**
+   * TEACHING NOTE - Loading State Logic:
+   * 
+   * Show loading spinner ONLY while data is being fetched (loaded === false).
+   * Once loaded === true, always show TriviaDisplay (even if data is empty).
+   * 
+   * Why? TriviaDisplay handles empty data gracefully by returning null.
+   * This prevents infinite loading spinners when data exists but is empty.
+   */
 
   return (
     <div className="gridContainer--col flex-center">
@@ -222,20 +153,14 @@ const Item = (props) => {
         <div className="characterBox--media flex-center">
           <img src="" alt="" />
           <Link
-            to={"/people/" + props.item_id}
+            to={getItemLink()}
             className="characterLink"
-            key={props.item_i}
+            key={item_id}
           >
-            {characterData.name}
+            {displayName}
           </Link>
-          {hasTriviaData ? (
-            <TriviaContent
-              title={"Planet of Origin"}
-              description={"Films played in"}
-              planet_id={planet_id}
-              homePlanet={homePlanet}
-              filmsURL={filmsURL}
-            />
+          {loaded ? (
+            <TriviaDisplay resourceType={resourceType} triviaData={triviaData} />
           ) : (
             <LoadingIcon />
           )}
@@ -245,15 +170,15 @@ const Item = (props) => {
             className="voteContainer--upVote flex-center"
             onClick={(e) => upVoteCharacter(e)}
           >
-            <i className="em em---1"></i>
-            <span className="voteCount">{characterUpVote}</span>{" "}
+            <i className="em em-thumbsup"></i>
+            <span className="voteCount">{itemVotes}</span>{" "}
           </div>
           <div
             className="voteContainer--downVote flex-center"
             onClick={(e) => downVoteCharacter(e)}
           >
-            <i className="em em--1"></i>
-            <span className="voteCount">{characterDownVote}</span>{" "}
+            <i className="em em-thumbsdown"></i>
+            <span className="voteCount">{itemDownVotes}</span>{" "}
           </div>
         </div>
         <div className="overAllVoteContainer flex-center">
