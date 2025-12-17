@@ -33,6 +33,8 @@ const DetailPlanet = (props) => {
       onSaveComment={saveComment}
       renderDetails={renderPlanetDetails}
       placeholderText="Enter your comments for this planet! :)"
+      resourceType="planets"
+      resourceId={props.params.id}
     />
   );
 };

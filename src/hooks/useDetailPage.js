@@ -32,8 +32,8 @@ const useDetailPage = ({ resourceType, id, pathname, dataKey = 'data', commentsK
     // SWAPI uses 1-based indexing
     let param_index = parseInt(id, 10) + 1;
 
-    // Explicitly pass query params with format=json
-    fetch(`https://swapi.dev/api/${resourceType}/${param_index}?format=json`)
+    // Using swapi.info mirror (swapi.dev has SSL certificate issues)
+    fetch(`https://swapi.info/api/${resourceType}/${param_index}`)
       .then((response) => response.json())
       .then((myJSON) => refineData(myJSON))
       .then((refinedData) => {

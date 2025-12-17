@@ -14,10 +14,19 @@ const Home = ({ location }) => {
 
   const refineData = useCallback((rawJSONData) => {
     // assuming this are the correct SWAPI raw data
-    const { count, next, previous, results } = rawJSONData;
+    const { count, next, previous, results } = rawJSONData || {};
     const { queryType } = homePage;
 
-    // Extract ID from SWAPI URL (e.g., "https://swapi.dev/api/people/1/" -> "1")
+    // Handle undefined results (API error or unexpected response)
+    if (!results || !Array.isArray(results)) {
+      console.error("Invalid API response:", rawJSONData);
+      return {
+        newList: [],
+        pagination: { count: 0, next: null, previous: null },
+      };
+    }
+
+    // Extract ID from SWAPI URL (e.g., "https://swapi.info/api/people/1" -> "1")
     const newList = results.map((item, i) => {
       const urlMatch = item.url.match(/\/(\d+)\/?$/);
       item.id = urlMatch ? parseInt(urlMatch[1], 10) - 1 : i; // SWAPI IDs are 1-based, convert to 0-based
@@ -45,9 +54,13 @@ const Home = ({ location }) => {
   const fetchData = useCallback((url = SWAPI.defaultURL) => {
     fetch(url, SWAPI.initHeaders())
       .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
         return response.json();
       })
       .then((myJSON) => {
+        console.log("Raw API response:", myJSON);
         return refineData(myJSON);
       })
       .then((refinedData) => {
@@ -56,6 +69,9 @@ const Home = ({ location }) => {
           data: refinedData.newList,
           pagination: refinedData.pagination,
         }));
+      })
+      .catch((error) => {
+        console.error("Fetch error:", error);
       });
   }, [refineData]);
 

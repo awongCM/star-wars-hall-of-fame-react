@@ -19,9 +19,19 @@
 
 .detailContainer--media {
 	width: 100%;
-	height: 80%;
+	height: 400px;
 	flex-direction: column;
 	background: #fffdf0;
+	margin-bottom: 20px;
+	overflow: hidden;
+}
+
+.detail-image {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center top;
+	display: block;
 }
 
 .detailContainer--description .title {

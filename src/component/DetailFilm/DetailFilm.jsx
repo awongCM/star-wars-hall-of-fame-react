@@ -30,6 +30,8 @@ const DetailFilm = (props) => {
       onSaveComment={saveComment}
       renderDetails={renderFilmDetails}
       placeholderText="Enter your comments for this film! :)"
+      resourceType="films"
+      resourceId={props.params.id}
     />
   );
 };

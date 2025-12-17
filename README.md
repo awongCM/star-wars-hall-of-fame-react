@@ -17,6 +17,7 @@
 
 1. You can upvote/downvote your favourite Star Wars character.
 2. You can write or add comments to your favourite Star Wars character as you click on their profile link. You can clear up your browser's cookies session to reset their comment fields if you want like, as there's a backend implementation to store them.
+3. **NEW**: Image support for all Star Wars resources (characters, planets, films, starships) with automatic fallback for missing images. See [ADDING_IMAGES.md](ADDING_IMAGES.md) for how to add images.
 
 ### Instructions to build and deploy
 
@@ -47,9 +48,9 @@ Version 1.0
 ### TODOS
 
 - ~~Add route/link to characters' planets/movies/trivia link content pages~~
-  ~~- Add pagination components for characters/planets/movies etc~~
+- ~~Add pagination components for characters/planets/movies etc~~
 - ~~Make data saving capabilities to be persistent~~
 - ~~Handle multi asynchronous requests logic~~
 - ~~To decide whether I should use JSX instead of js moving forth~~
-- Provide MongoDB service for hosting star wars images
+- ~~Provide image support for hosting star wars images~~ ✅ **COMPLETED** - See [ADDING_IMAGES.md](ADDING_IMAGES.md)
 - ~~Refactored class-based components to make use of hooks~~

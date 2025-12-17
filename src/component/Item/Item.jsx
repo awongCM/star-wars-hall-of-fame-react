@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router";
 import useTrivia from "../../hooks/useTrivia";
 import TriviaDisplay from "../TriviaDisplay/TriviaDisplay";
+import { getImageUrl } from "../../services/images";
 import "./../Grid/Grid.css";
 import "./Item.css";
 
@@ -136,6 +137,10 @@ const Item = (props) => {
   const itemVotes = itemData.up_vote || 0;
   const itemDownVotes = itemData.down_vote || 0;
   const overallPopularity = itemData.overall_vote || 0;
+  
+  // Get image URL for this resource
+  const imageUrl = getImageUrl(resourceType, item_id);
+  const imageAlt = `${displayName} - ${resourceType}`;
 
   /**
    * TEACHING NOTE - Loading State Logic:
@@ -151,7 +156,18 @@ const Item = (props) => {
     <div className="gridContainer--col flex-center">
       <div className="characterBox">
         <div className="characterBox--media flex-center">
-          <img src="" alt="" />
+          {/*
+          <img 
+            src={imageUrl} 
+            alt={imageAlt}
+            className="character-image"
+            // onError={(e) => {
+            //   // Fallback to placeholder on error
+            //   e.target.src = '/images/placeholder.svg';
+            //   e.target.onerror = null; // Prevent infinite loop
+            // }}
+          />
+          */}
           <Link
             to={getItemLink()}
             className="characterLink"

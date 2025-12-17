@@ -1,16 +1,20 @@
 //API Request Settings
+// Note: Using swapi.py4e.com mirror as swapi.dev has SSL certificate issues (as of Dec 2025)
 
-export const peopleURL = "https://swapi.dev/api/people/",
+export const peopleURL = "https://swapi.py4e.com/api/people/",
   defaultURL = peopleURL,
-  planetsURL = "https://swapi.dev/api/planets/",
-  filmsURL = "https://swapi.dev/api/films/",
-  starshipsURL = "https://swapi.dev/api/starships/";
+  planetsURL = "https://swapi.py4e.com/api/planets/",
+  filmsURL = "https://swapi.py4e.com/api/films/",
+  starshipsURL = "https://swapi.py4e.com/api/starships/";
 
 export function initHeaders() {
   return {
     method: "GET",
+    mode: "cors",
     cache: "default",
-    accept: "application/json",
+    headers: {
+      "Accept": "application/json",
+    },
   };
 }
 

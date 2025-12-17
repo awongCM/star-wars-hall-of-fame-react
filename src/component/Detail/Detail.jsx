@@ -32,6 +32,8 @@ const Detail = (props) => {
       onSaveComment={saveComment}
       renderDetails={renderCharacterDetails}
       placeholderText="Enter your comments for this hero/villain! :)"
+      resourceType="people"
+      resourceId={props.params.id}
     />
   );
 };

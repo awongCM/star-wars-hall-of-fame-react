@@ -1,5 +1,6 @@
 import React, { useRef } from "react";
 import { Link } from "react-router";
+import { getImageUrl } from "../../services/images";
 
 /**
  * Shared DetailView component for displaying Star Wars resource details
@@ -11,6 +12,8 @@ import { Link } from "react-router";
  * @param {Function} props.renderDetails - Function to render resource-specific details
  * @param {string} props.placeholderText - Placeholder text for comment textarea
  * @param {string} props.cssClass - Optional CSS class for styling
+ * @param {string} props.resourceType - Resource type for image loading
+ * @param {number} props.resourceId - Resource ID for image loading
  */
 const DetailView = ({ 
   data, 
@@ -18,9 +21,15 @@ const DetailView = ({
   onSaveComment, 
   renderDetails, 
   placeholderText = "Enter your comments! :)",
-  cssClass = ""
+  cssClass = "",
+  resourceType = "people",
+  resourceId = 0
 }) => {
   const commentInput = useRef(null);
+  
+  // Get image for detail page
+  const imageUrl = getImageUrl(resourceType, resourceId);
+  const imageName = data.name || data.title || "Unknown";
 
   const handleSaveComment = () => {
     const comment = commentInput.current.value;
@@ -49,7 +58,17 @@ const DetailView = ({
 
       <div className="detailContainer">
         <div className="detailContainer--media flex-center">
-          <img src="" alt="" />
+          {/*
+          <img 
+            src={imageUrl} 
+            alt={imageName}
+            className="detail-image"
+            // onError={(e) => {
+            //   e.target.src = '/images/placeholder.svg';
+            //   e.target.onerror = null;
+            // }}
+          />
+          */}
         </div>
         <div className="detailContainer--description">
           {renderDetails(data)}
